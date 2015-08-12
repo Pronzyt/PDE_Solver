@@ -20,11 +20,13 @@ protected:
 
 
 class Layer: public BaseLayer{
+public:
 	Layer();
-	void setRange(state_iterator begin, state_iterator end);
-	
+	void setRange(state_iterator begin, state_iterator end);	
 };
 
 class BaseBoundaryCondition: public BaseLayer{
+public:
 	BaseBoundaryCondition();
+        void setBound(state_iterator bound);        
 };
