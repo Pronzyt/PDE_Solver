@@ -5,12 +5,16 @@ template<typename Ty>
 class Space1D
 {
 public:
-	typedef typename std::vector<Ty>::size_type size_type;
-	typedef typename std::vector<Ty>::value_type value_type;
-	typedef typename std::vector<Ty>::iterator iterator;
-	typedef typename std::vector<Ty>::const_iterator const_iterator;
-	typedef value_type(*init_func);
+	typedef Space1D<Ty> my_Ty;
+	typedef std::vector<Ty> container_type;
+	typedef typename container_type::size_type size_type;
+	typedef typename container_type::value_type value_type;
+	typedef typename container_type::iterator iterator;
+	typedef typename container_type::const_iterator const_iterator;
+	typedef value_type(*init_func_type)(size_type);
 	Space1D(){};
+	Space1D(size_type size);
+	Space1D(size_type size, init_func_type init_func);
 	Space1D(const Space1D&){};
 	~Space1D(){};
 	iterator begin();
@@ -20,7 +24,7 @@ public:
 	value_type operator[](int i);
 	size_type size();	
 private:
-	std::vector<Ty> m_container;
+	container_type m_container;
 };
 
 #include "Space.hpp"
