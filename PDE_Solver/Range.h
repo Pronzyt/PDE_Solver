@@ -40,11 +40,12 @@ static_assert(std::is_same<typename BidirectionalIterator::value_type, Ty>::valu
 template<typename Ty>
 class Range{
 public:
-	typedef typename Ty valye_type;
+	typedef typename Ty value_type;
+	
 	template<typename BidirectionalIterator>
 	void setRange(BidirectionalIterator begin, BidirectionalIterator end)
 	{
-		m_holder = new Holder<Ty, BidirectionalIterator>(begin, end);		
+		m_holder = new Holder<value_type, BidirectionalIterator>(begin, end);		
 	};
 	
 	~Range()
@@ -54,7 +55,7 @@ public:
 	}
 	
 private:
-	BaseHolder<Ty>* m_holder = 0;
+	BaseHolder<value_type>* m_holder = 0;
 };
 
 
