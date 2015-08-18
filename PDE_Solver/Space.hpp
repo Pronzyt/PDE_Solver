@@ -28,7 +28,7 @@ typename Space1D<Ty>::iterator Space1D<Ty>::end()
 }
 
 template<typename Ty>
-typename Space1D<Ty>::const_iterator Space1D<Ty>::cbegin()
+typename Space1D<Ty>::const_iterator Space1D<Ty>::cbegin() const
 {
 	return this->m_container.cbegin();
 }
@@ -43,4 +43,14 @@ template<typename Ty>
 typename Space1D<Ty>::value_type Space1D<Ty>::operator [](int i)
 {
 	return this->m_container[i];
+}
+
+template<typename Ty>
+Range<typename Space1D<Ty>::value_type> Space1D<Ty>::getRange(size_type from, size_type to)
+{
+	auto first = m_container.begin();
+	auto last = m_container.begin();
+	std::advance(first, from);
+	std::advance(last, to);
+	return Range<value_type>(first, last);
 }

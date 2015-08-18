@@ -1,4 +1,5 @@
 #include <iterator>
+#include "Range.h"
 
 
 template<typename Ty> 
@@ -21,12 +22,13 @@ template<typename Ty>
 class Layer: public BaseLayer<Ty>{
 public:
 	typedef typename BaseLayer<Ty>::value_type value_type;
+	typedef Range<value_type> range_type;
 	Layer();
-	virtual ~Layer() override{};
+	void setRange(range_type range);	
 	virtual void forward_recount_step() override;
+	virtual ~Layer() override{};
 private:
-//	iterator_type m_current;
-	//void setRange(state_iterator begin, state_iterator end);	
+	Range<value_type> m_range;
 };
 
 //class BaseBoundaryCondition: public BaseLayer{
