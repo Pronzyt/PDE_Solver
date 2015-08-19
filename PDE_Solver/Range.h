@@ -5,13 +5,15 @@ template<typename Ty>
 class BaseHolder{
 public:
 	typedef Ty value_type;
+	typedef BaseHolder<Ty> my_Ty;
+	virtual my_Ty* clone() const = 0;
 	virtual void increment() = 0;
 	virtual void decrement() = 0;
 	virtual void to_begin() = 0;
 	virtual void to_rbegin() = 0;
 	virtual bool in_end() = 0;
 	virtual bool in_rend() = 0;
-	virtual value_type getValue() const = 0;
+	virtual value_type getValue()const = 0;
 	virtual ~BaseHolder() = 0;
 };
 
@@ -25,15 +27,15 @@ class Holder : public BaseHolder<Ty>{
 static_assert(std::is_same<typename BidirectionalIterator::value_type, Ty>::value, "Wrong iterator value type");
 
 	public:
-		typedef typename BaseHolder<Ty>::value_type value_type;
+		typedef Holder<Ty, BidirectionalIterator> my_Ty;
+		typedef typename my_Ty::value_type value_type;		
 		typedef BidirectionalIterator iterator_type;
-		//Clone!!
 		Holder() = delete;
 		Holder(iterator_type first, iterator_type last) : m_begin(first), 
 														  m_rbegin(last),
 														  m_end(++last),
 														  m_rend(--first){};
-		
+		my_Ty* clone() const override {return new my_Ty(*this);};		
 		void increment() override {++m_current;};
 		void decrement() override {--m_current;};
 		void to_begin() override {m_current = m_begin;};
@@ -58,31 +60,30 @@ public:
 	typedef Range<Ty> my_Ty;
 	
 	Range() = delete;
-	Range(const Range& rhs){};
+	Range(const Range& rhs){m_holder = rhs.m_holder->clone();}
+	Range& operator=(const Range& rhs)
+	{
+		delete m_holder;
+		m_holder = rhs.m_holder->clone();
+		return *this;
+	}
 	
 	template<typename BidirectionalIterator>
 	Range(BidirectionalIterator first, BidirectionalIterator last)
 	{
 		m_holder = new Holder<value_type, BidirectionalIterator>(first, last);		
-	};
-	
-	my_Ty& operator++(){m_holder->increment(); return *this;}
-	my_Ty& operator++(int){my_Ty temp(*this); m_holder->increment(); return temp;};
-	my_Ty& operator--(){m_holder->decrement(); return *this;};
-	my_Ty& operator--(int){my_Ty temp(*this); m_holder->decrement(); return temp;};
-	
-	my_Ty& to_begin(){m_holder->to_begin(); return *this;};
-	bool in_end(){return m_holder->in_end();};
-	
-	value_type getValue() const {return m_holder->getValue();}
-	
-	
-	~Range()
-	{
-		delete m_holder;
-		m_holder = 0;
 	}
 	
+	my_Ty& operator++(){m_holder->increment(); return *this;}
+	my_Ty operator++(int){my_Ty temp(*this); m_holder->increment(); return temp;}
+	my_Ty& operator--(){m_holder->decrement(); return *this;}
+	my_Ty operator--(int){my_Ty temp(*this); m_holder->decrement(); return temp;}
+	my_Ty& to_begin(){m_holder->to_begin(); return *this;}
+	my_Ty& to_rbegin(){m_holder->to_rbegin(); return *this;}
+	bool in_end(){return m_holder->in_end();};
+	bool in_rend(){return m_holder->in_rend();};	
+	value_type getValue() const {return m_holder->getValue();}	
+	~Range(){delete m_holder;}	
 private:
 	BaseHolder<value_type>* m_holder = 0;
 };

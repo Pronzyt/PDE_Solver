@@ -1,3 +1,6 @@
+#ifndef SPACE_H
+#define SPACE_H
+
 #include <vector>
 #include <iterator>
 #include "Range.h"
@@ -30,3 +33,5 @@ private:
 };
 
 #include "Space.hpp"
+
+#endif

@@ -2,6 +2,7 @@
 #include "Layer.h"
 #include "Range.h"
 #include <iostream>
+
 double init(long unsigned int x)
 {
 	return x;
@@ -11,12 +12,19 @@ double init(long unsigned int x)
 int main()
 {
 	Space1D<double> space(100, init);
-	Range<double> range = space.getRange(0, 50);
-	auto r = range.to_begin();
-//	for(auto r = range.to_begin(); range.in_end(); ++range)
+//	for(auto it = space.begin(); it != space.end(); ++it)
 //	{
-//		std::cout<<r.getValue();
-//	};	
+//		std::cout<<*it<<"\n";
+//	};
+//	Range<double> range1(space.getRange(0, 50));
+//	Range<double> range2(space.getRange(51, 100));
+//	range2 = range1;
+
+
+	for(auto r = space.getRange(0, 10).to_begin(); !r.in_end(); r++)
+	{
+		std::cout<<r.getValue()<<"\n";
+	};	
 	
 //	++range;
 	//Holder<double, std::vector<int>::iterator> holder(v.begin(), v.end());
