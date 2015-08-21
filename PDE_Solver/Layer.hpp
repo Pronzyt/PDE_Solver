@@ -21,7 +21,9 @@ void BaseLayer<Ty>::setBackwardFunc(recount_func func)
 
 template<typename Ty>
 Layer<Ty>::Layer(range_type range, recount_func f_func, recount_func b_func)
-: m_f_recount_func(f_func), m_b_recount_func(b_func), m_range(range)
+:	BaseLayer<Ty>:: m_f_recount_func(f_func), 
+	BaseLayer<Ty>::	m_b_recount_func(b_func), 
+	m_range(range)
 {}
 
 

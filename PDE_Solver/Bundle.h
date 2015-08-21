@@ -14,13 +14,8 @@ class Bundle{
 		typedef Range<state_type> Range;
 		typedef BaseLayer<state_type> BaseLayer;
 		typedef Layer<state_type> Layer;
-		
-		
-		
 	private:
 			
-}
-
+};
 
 #endif	/* BUNDLE_H */
-
