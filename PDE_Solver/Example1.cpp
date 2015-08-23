@@ -40,6 +40,14 @@ double time_end = 60;
 double time_step_num = 100;
 double tau = time_end / time_step_num;
 
+//size
+double L = 0.1;
+double h = L / N;
+
+//constant
+double b = a * tau / (2 * h * h);
+//double denom = 
+
 State init(Space1DEx1::size_type x)
 {
 	if (x == 0)
@@ -50,18 +58,64 @@ State init(Space1DEx1::size_type x)
 		return {a, 0, 0, tau, t_begin};
 }
 
+State* prev;
+
+//left-side boundary condition (1st type)
+State& recountForward1(State& arg)
+{
+//	prev = &arg;
+	return arg;
+};
+
+State& recountBackward1(State& arg)
+{
+	return arg;
+}; 
+
+//heat transmition in not boundary layer
+State& recountForward2(State& arg)
+{
+	arg.alpha = b
+	return arg;
+};
+
+State& recountBackward2(State& arg)
+{
+	return arg;
+};
+
+//right-side boundary condition
+State& recountForward3(State& arg)
+{
+	return arg;
+};
+
+State& recountBackward3(State& arg)
+{
+	prev = &arg;
+	return arg;
+};
+
 
 void runExample1()
 {
 	Space1DEx1 space(N, init);	
-	std::vector<LayerEx1*> v = std::vector<LayerEx1*>(3);
+	std::vector<LayerEx1*> v = std::vector<LayerEx1*>(1);
+	v.push_back(new LayerEx1(space.getRange(1, N - 2), recountForward2, recountBackward2)); 
+
 //	v()
 	
 	
 	
 	
 };
-		
+
+
+int main()
+{
+	runExample1();
+	return 0;
+}
 		
 
 

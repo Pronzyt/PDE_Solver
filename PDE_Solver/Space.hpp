@@ -1,11 +1,11 @@
 template<typename Ty>
-Space1D<Ty>::Space1D(Space1D<Ty>::size_type size)
+Space1D<Ty>::Space1D(typename Space1D<Ty>::size_type size)
 {
     m_container.resize(size);
 }
 
 template<typename Ty>
-Space1D<Ty>::Space1D(Space1D<Ty>::size_type size, Space1D<Ty>::init_func_type init_func)
+Space1D<Ty>::Space1D(typename Space1D<Ty>::size_type size, typename Space1D<Ty>::init_func_type init_func)
 {
 	m_container.resize(size);
 	my_Ty::size_type x = 0;

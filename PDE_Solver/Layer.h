@@ -19,6 +19,7 @@ public:
 	virtual void resetBackward() = 0;
 	virtual ~BaseLayer() = 0;
 protected:
+	BaseLayer(recount_func f_func, recount_func b_func);
 	recount_func m_f_recount_func;
 	recount_func m_b_recount_func;
 };
