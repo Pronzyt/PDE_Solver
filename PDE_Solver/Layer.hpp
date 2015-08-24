@@ -6,17 +6,17 @@ BaseLayer<Ty>::BaseLayer(recount_func f_func, recount_func b_func)
 template<typename Ty>
 BaseLayer<Ty>::~BaseLayer(){}
 
-template<typename Ty>
-void BaseLayer<Ty>::setForwardFunc(recount_func func)
-{
-	m_f_recount_func = func;
-}
-
-template<typename Ty>
-void BaseLayer<Ty>::setBackwardFunc(recount_func func)
-{
-	m_b_recount_func = func;
-}
+//template<typename Ty>
+//void BaseLayer<Ty>::setForwardFunc(recount_func func)
+//{
+//	m_f_recount_func = func;
+//}
+//
+//template<typename Ty>
+//void BaseLayer<Ty>::setBackwardFunc(recount_func func)
+//{
+//	m_b_recount_func = func;
+//}
 
 //template<typename Ty>
 //Layer<Ty>::Layer()
@@ -40,7 +40,7 @@ void Layer<Ty>::setRange(range_type range)
 template<typename Ty>
 bool Layer<Ty>::forward_recount_step()
 {
-	m_f_recount_func(m_range.getValue());
+	this->m_f_recount_func(*m_range);
 	++m_range;
 	return m_range.in_end();
 }
@@ -48,19 +48,19 @@ bool Layer<Ty>::forward_recount_step()
 template<typename Ty>
 bool Layer<Ty>::backward_recount_step()
 {
-	m_b_recount_func(m_range.getValue());
+	this->m_b_recount_func(*m_range);
 	--m_range;
 	return m_range.in_rend();
 }
 
-template<typename Ty>
-void Layer<Ty>::resetForward()
-{
-	m_range.to_begin();
-}
-
-template<typename Ty>
-void Layer<Ty>::resetBackward()
-{
-	m_range.to_rbegin();
-}
+//template<typename Ty>
+//void Layer<Ty>::resetForward()
+//{
+//	m_range.to_begin();
+//}
+//
+//template<typename Ty>
+//void Layer<Ty>::resetBackward()
+//{
+//	m_range.to_rbegin();
+//}

@@ -13,6 +13,8 @@ struct State{
 	double beta;
 	double tau;		//timestep
 	double value;	//current value
+	State* prev;
+	State* next;
 };
 
 using BundleEx1 =  Bundle<State>;
@@ -46,19 +48,18 @@ double h = L / N;
 
 //constant
 double b = a * tau / (2 * h * h);
-//double denom = 
+double denom = 1 + 2 * b; 
+
 
 State init(Space1DEx1::size_type x)
 {
 	if (x == 0)
-		return {0, 0, t_left, 0, t_left};
+		return {0, 0, t_left, 0, t_left, 0, 0};
 	else if (x == N - 1)
-		return {0, 0, 0, 0, t_right};
+		return {0, 0, 0, 0, t_right, 0, 0};
 	else
-		return {a, 0, 0, tau, t_begin};
+		return {a, 0, 0, tau, t_begin, 0, 0};
 }
-
-State* prev;
 
 //left-side boundary condition (1st type)
 State& recountForward1(State& arg)
@@ -75,7 +76,8 @@ State& recountBackward1(State& arg)
 //heat transmition in not boundary layer
 State& recountForward2(State& arg)
 {
-	arg.alpha = b
+	arg.alpha = b / (denom - b * arg.alpha);
+	
 	return arg;
 };
 
@@ -92,7 +94,6 @@ State& recountForward3(State& arg)
 
 State& recountBackward3(State& arg)
 {
-	prev = &arg;
 	return arg;
 };
 
@@ -101,13 +102,10 @@ void runExample1()
 {
 	Space1DEx1 space(N, init);	
 	std::vector<LayerEx1*> v = std::vector<LayerEx1*>(1);
+	Bundle<State>::Space1D space1 = Bundle<State>::Space1D(N, init);
+	v.push_back(new LayerEx1(space.getRange(0, 0), recountForward1, recountBackward1)); 
 	v.push_back(new LayerEx1(space.getRange(1, N - 2), recountForward2, recountBackward2)); 
-
-//	v()
-	
-	
-	
-	
+	v.push_back(new LayerEx1(space.getRange(N - 1, N - 1), recountForward3, recountBackward3)); 
 };
 
 

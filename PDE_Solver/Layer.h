@@ -10,13 +10,14 @@ class BaseLayer{
 public:
 	typedef BaseLayer<Ty> my_Ty;
 	typedef Ty value_type;
-	typedef value_type&(*recount_func)(value_type&);
-	virtual void setForwardFunc(recount_func func);
-	virtual void setBackwardFunc(recount_func func);
+	typedef Range<value_type> range_type; //Создать интерфейс
+	typedef value_type&(*recount_func)(range_type);
+//	virtual void setForwardFunc(recount_func func);
+//	virtual void setBackwardFunc(recount_func func);
 	virtual bool forward_recount_step() = 0;
 	virtual bool backward_recount_step() = 0;
-	virtual void resetForward() = 0;
-	virtual void resetBackward() = 0;
+//	virtual void resetForward() = 0;
+//	virtual void resetBackward() = 0;
 	virtual ~BaseLayer() = 0;
 protected:
 	BaseLayer(recount_func f_func, recount_func b_func);
@@ -37,8 +38,8 @@ public:
 	void setRange(range_type range);	
 	virtual bool forward_recount_step() override;
 	virtual bool backward_recount_step() override;
-	virtual void resetForward() override;
-	virtual void resetBackward() override;
+//	virtual void resetForward() override;
+//	virtual void resetBackward() override;
 	virtual ~Layer() override{};
 private:
 	Range<value_type> m_range;

@@ -13,7 +13,7 @@ public:
 	virtual void to_rbegin() = 0;
 	virtual bool in_end() = 0;
 	virtual bool in_rend() = 0;
-	virtual value_type getValue()const = 0;
+	virtual value_type& getValue() = 0;
 	virtual ~BaseHolder() = 0;
 };
 
@@ -42,7 +42,7 @@ static_assert(std::is_same<typename BidirectionalIterator::value_type, Ty>::valu
 		void to_rbegin() override {m_current = m_rbegin;};
 		bool in_end() override {return m_current == m_end;};
 		bool in_rend() override {return m_current == m_rend;}
-		value_type getValue() const override {return *m_current;};
+		value_type& getValue() override {return *m_current;};
 		~Holder() override {};
 	private:	
 		const iterator_type m_begin;
@@ -52,6 +52,16 @@ static_assert(std::is_same<typename BidirectionalIterator::value_type, Ty>::valu
 		iterator_type m_current;		
 };
 
+template<typename Ty>
+class RangeInterface{
+public:
+	typedef RangeInterface
+	my_Ty& operator++(){m_holder->increment(); return *this;}
+	my_Ty operator++(int){my_Ty temp(*this); m_holder->increment(); return temp;}
+	my_Ty& operator--(){m_holder->decrement(); return *this;}
+	my_Ty operator--(int){my_Ty temp(*this); m_holder->decrement(); return temp;}
+	value_type& operator*(){return m_holder->getValue();};	
+}
 
 template<typename Ty>
 class Range{
@@ -78,11 +88,14 @@ public:
 	my_Ty operator++(int){my_Ty temp(*this); m_holder->increment(); return temp;}
 	my_Ty& operator--(){m_holder->decrement(); return *this;}
 	my_Ty operator--(int){my_Ty temp(*this); m_holder->decrement(); return temp;}
+	value_type& operator*(){return m_holder->getValue();};
+	
 	my_Ty& to_begin(){m_holder->to_begin(); return *this;}
 	my_Ty& to_rbegin(){m_holder->to_rbegin(); return *this;}
 	bool in_end(){return m_holder->in_end();};
 	bool in_rend(){return m_holder->in_rend();};	
-	value_type getValue() const {return m_holder->getValue();}	
+	value_type getValue() const {return m_holder->getValue();}
+	
 	~Range(){delete m_holder;}	
 private:
 	BaseHolder<value_type>* m_holder = 0;
