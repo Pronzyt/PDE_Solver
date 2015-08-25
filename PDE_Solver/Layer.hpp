@@ -40,7 +40,8 @@ void Layer<Ty>::setRange(range_type range)
 template<typename Ty>
 bool Layer<Ty>::forward_recount_step()
 {
-	this->m_f_recount_func(*m_range);
+	range_type temp = m_range;
+	this->m_f_recount_func(temp);
 	++m_range;
 	return m_range.in_end();
 }
@@ -48,7 +49,8 @@ bool Layer<Ty>::forward_recount_step()
 template<typename Ty>
 bool Layer<Ty>::backward_recount_step()
 {
-	this->m_b_recount_func(*m_range);
+	range_type temp = m_range;
+	this->m_b_recount_func(temp);
 	--m_range;
 	return m_range.in_rend();
 }

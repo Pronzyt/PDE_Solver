@@ -13,13 +13,12 @@ struct State{
 	double beta;
 	double tau;		//timestep
 	double value;	//current value
-	State* prev;
-	State* next;
 };
 
 using BundleEx1 =  Bundle<State>;
 using LayerEx1 = BundleEx1::Layer;
 using Space1DEx1 = BundleEx1::Space1D;
+using IteratorEx1 = BundleEx1::Iterator;
 
 
 //Number of steps
@@ -48,64 +47,70 @@ double h = L / N;
 
 //constant
 double b = a * tau / (2 * h * h);
-double denom = 1 + 2 * b; 
-
 
 State init(Space1DEx1::size_type x)
 {
 	if (x == 0)
-		return {0, 0, t_left, 0, t_left, 0, 0};
+		return {0, 0, t_left, 0, t_left};
 	else if (x == N - 1)
-		return {0, 0, 0, 0, t_right, 0, 0};
+		return {0, 0, 0, 0, t_right};
 	else
-		return {a, 0, 0, tau, t_begin, 0, 0};
+		return {a, 0, 0, tau, t_begin};
 }
 
 //left-side boundary condition (1st type)
-State& recountForward1(State& arg)
+State& recountForward1(IteratorEx1& arg)
 {
-//	prev = &arg;
-	return arg;
+	return *arg;
 };
-
-State& recountBackward1(State& arg)
+//
+State& recountBackward1(IteratorEx1& arg)
 {
-	return arg;
+	return *arg;
 }; 
 
 //heat transmition in not boundary layer
-State& recountForward2(State& arg)
+State& recountForward2(IteratorEx1& arg)
 {
-	arg.alpha = b / (denom - b * arg.alpha);
-	
-	return arg;
+	static const double part = 1 + 2 * b;
+	--arg;
+	State& prev = *arg;	
+	double denom = part - b * prev.alpha;
+	double temp = prev.beta + prev.value;
+	State& curr = *++arg;
+	curr.alpha = b / denom;
+	curr.beta = (b * (temp - 2 * curr.value + (*++arg).value) + curr.value) / denom;
+	return curr;
 };
 
-State& recountBackward2(State& arg)
+State& recountBackward2(IteratorEx1& arg)
 {
-	return arg;
+	State& curr = *arg;
+	State& prev = *--arg;
+	curr.value = curr.alpha * prev.value + curr.beta;
+	return curr;
 };
 
 //right-side boundary condition
-State& recountForward3(State& arg)
+State& recountForward3(IteratorEx1& arg)
 {
-	return arg;
+	return *arg;
 };
 
-State& recountBackward3(State& arg)
+State& recountBackward3(IteratorEx1& arg)
 {
-	return arg;
+	return *arg;
 };
 
 
 void runExample1()
 {
 	Space1DEx1 space(N, init);	
-	std::vector<LayerEx1*> v = std::vector<LayerEx1*>(1);
-	Bundle<State>::Space1D space1 = Bundle<State>::Space1D(N, init);
+	std::vector<LayerEx1*> v = std::vector<LayerEx1*>(3);
 	v.push_back(new LayerEx1(space.getRange(0, 0), recountForward1, recountBackward1)); 
 	v.push_back(new LayerEx1(space.getRange(1, N - 2), recountForward2, recountBackward2)); 
 	v.push_back(new LayerEx1(space.getRange(N - 1, N - 1), recountForward3, recountBackward3)); 
+	
 };
 
 

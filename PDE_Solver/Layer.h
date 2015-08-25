@@ -10,8 +10,8 @@ class BaseLayer{
 public:
 	typedef BaseLayer<Ty> my_Ty;
 	typedef Ty value_type;
-	typedef Range<value_type> range_type; //Создать интерфейс
-	typedef value_type&(*recount_func)(value_type&);
+	typedef IRange<Range<value_type>, value_type> iterator; //Создать интерфейс
+	typedef value_type&(*recount_func)(iterator&);
 //	virtual void setForwardFunc(recount_func func);
 //	virtual void setBackwardFunc(recount_func func);
 	virtual bool forward_recount_step() = 0;
@@ -42,7 +42,7 @@ public:
 //	virtual void resetBackward() override;
 	virtual ~Layer() override{};
 private:
-	Range<value_type> m_range;
+	range_type m_range;
 };
 
 //class BaseBoundaryCondition: public BaseLayer{

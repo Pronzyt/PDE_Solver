@@ -52,24 +52,21 @@ static_assert(std::is_same<typename BidirectionalIterator::value_type, Ty>::valu
 		iterator_type m_current;		
 };
 
-template <typename Derived>
-struct range_traits;
 
-//traits??
-template<typename Derived>
+template<typename Derived, typename my_Val>
 class IRange{
 public:
-	typedef typename Derived::value_type value_type;
+	typedef my_Val value_type;
 	virtual Derived& operator++() = 0;
 	virtual Derived operator++(int) = 0;
 	virtual Derived& operator--() = 0;
 	virtual Derived operator--(int) = 0;
-	//virtual value_type& operator*() = 0;
+	virtual value_type& operator*() = 0;
 };
 
 
 template<typename Ty>
-class Range: public IRange<Range<Ty>> {
+class Range: public IRange<Range<Ty>, Ty> {
 public:
 	typedef Ty value_type;
 	typedef Range<Ty> my_Ty;
@@ -89,11 +86,11 @@ public:
 		m_holder = new Holder<value_type, BidirectionalIterator>(first, last);		
 	}
 	
-	my_Ty& operator++(){m_holder->increment(); return *this;}
-	my_Ty operator++(int){my_Ty temp(*this); m_holder->increment(); return temp;}
-	my_Ty& operator--(){m_holder->decrement(); return *this;}
-	my_Ty operator--(int){my_Ty temp(*this); m_holder->decrement(); return temp;}
-	value_type& operator*(){return m_holder->getValue();};
+	my_Ty& operator++() override {m_holder->increment(); return *this;}
+	my_Ty operator++(int) override {my_Ty temp(*this); m_holder->increment(); return temp;}
+	my_Ty& operator--() override {m_holder->decrement(); return *this;}
+	my_Ty operator--(int) override {my_Ty temp(*this); m_holder->decrement(); return temp;}
+	value_type& operator*() override {return m_holder->getValue();};
 	
 	my_Ty& to_begin(){m_holder->to_begin(); return *this;}
 	my_Ty& to_rbegin(){m_holder->to_rbegin(); return *this;}
