@@ -11,7 +11,7 @@ public:
 	typedef BaseLayer<Ty> my_Ty;
 	typedef Ty value_type;
 	typedef Range<value_type> range_type; //Создать интерфейс
-	typedef value_type&(*recount_func)(range_type);
+	typedef value_type&(*recount_func)(value_type&);
 //	virtual void setForwardFunc(recount_func func);
 //	virtual void setBackwardFunc(recount_func func);
 	virtual bool forward_recount_step() = 0;

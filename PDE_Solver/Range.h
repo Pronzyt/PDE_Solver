@@ -52,19 +52,24 @@ static_assert(std::is_same<typename BidirectionalIterator::value_type, Ty>::valu
 		iterator_type m_current;		
 };
 
-template<typename Ty>
-class RangeInterface{
+template <typename Derived>
+struct range_traits;
+
+//traits??
+template<typename Derived>
+class IRange{
 public:
-	typedef RangeInterface
-	my_Ty& operator++(){m_holder->increment(); return *this;}
-	my_Ty operator++(int){my_Ty temp(*this); m_holder->increment(); return temp;}
-	my_Ty& operator--(){m_holder->decrement(); return *this;}
-	my_Ty operator--(int){my_Ty temp(*this); m_holder->decrement(); return temp;}
-	value_type& operator*(){return m_holder->getValue();};	
-}
+	typedef typename Derived::value_type value_type;
+	virtual Derived& operator++() = 0;
+	virtual Derived operator++(int) = 0;
+	virtual Derived& operator--() = 0;
+	virtual Derived operator--(int) = 0;
+	//virtual value_type& operator*() = 0;
+};
+
 
 template<typename Ty>
-class Range{
+class Range: public IRange<Range<Ty>> {
 public:
 	typedef Ty value_type;
 	typedef Range<Ty> my_Ty;
