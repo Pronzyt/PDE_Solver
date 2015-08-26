@@ -106,11 +106,28 @@ State& recountBackward3(IteratorEx1& arg)
 void runExample1()
 {
 	Space1DEx1 space(N, init);	
-	std::vector<LayerEx1*> v = std::vector<LayerEx1*>(3);
+	std::vector<LayerEx1*> v;
 	v.push_back(new LayerEx1(space.getRange(0, 0), recountForward1, recountBackward1)); 
 	v.push_back(new LayerEx1(space.getRange(1, N - 2), recountForward2, recountBackward2)); 
 	v.push_back(new LayerEx1(space.getRange(N - 1, N - 1), recountForward3, recountBackward3)); 
-	
+	double count = 0;
+	while (count < time_end)
+	{
+		for (auto it = v.begin(); it != v.end(); ++it)
+		{
+			LayerEx1& temp = **it;
+			temp.resetForward();			
+			while(temp.forward_recount_step()){};
+		};
+		
+		for(auto rit = v.rbegin(); rit != v.rend(); ++rit)
+		{
+			LayerEx1& temp = **rit;
+			temp.resetBackward();
+			while(temp.backward_recount_step()){};
+		};
+		count += tau;
+	};
 };
 
 

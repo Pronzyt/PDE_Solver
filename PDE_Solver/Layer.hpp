@@ -55,14 +55,14 @@ bool Layer<Ty>::backward_recount_step()
 	return m_range.in_rend();
 }
 
-//template<typename Ty>
-//void Layer<Ty>::resetForward()
-//{
-//	m_range.to_begin();
-//}
-//
-//template<typename Ty>
-//void Layer<Ty>::resetBackward()
-//{
-//	m_range.to_rbegin();
-//}
+template<typename Ty>
+void Layer<Ty>::resetForward()
+{
+	m_range.to_begin();
+}
+
+template<typename Ty>
+void Layer<Ty>::resetBackward()
+{
+	m_range.to_rbegin();
+}
