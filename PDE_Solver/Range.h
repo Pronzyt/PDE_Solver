@@ -32,25 +32,19 @@ static_assert(std::is_same<typename BidirectionalIterator::value_type, Ty>::valu
 		typedef typename my_Ty::value_type value_type;		
 		typedef BidirectionalIterator iterator_type;
 		Holder() = delete;
-		Holder(iterator_type begin, iterator_type end, iterator_type rbegin, iterator_type rend) 
+		Holder(iterator_type begin, iterator_type end) 
 			: m_begin(begin),
-			m_rbegin(rbegin),
-			m_end(end),
-			m_rend(rend){};
+			m_end(end){};
 		my_Ty* clone() const override {return new my_Ty(*this);};		
 		void increment() override {++m_current;};
 		void decrement() override {--m_current;};
 		void to_begin() override {m_current = m_begin;};
-		void to_rbegin() override {m_current = m_rbegin;};
 		bool in_end() override {return m_current == m_end;};
-		bool in_rend() override {return m_current == m_rend;}
 		value_type& getValue() override {return *m_current;};
 		~Holder() override {};
 	private:	
 		const iterator_type m_begin;
-		const iterator_type m_rbegin;
 		const iterator_type m_end;	
-		const iterator_type m_rend;
 		iterator_type m_current;		
 };
 
@@ -83,9 +77,9 @@ public:
 	}
 	
 	template<typename BidirectionalIterator>
-	Range(BidirectionalIterator begin, BidirectionalIterator end, BidirectionalIterator end)
+	Range(BidirectionalIterator begin, BidirectionalIterator end)
 	{
-		//m_holder = new Holder<value_type, BidirectionalIterator>(begin, end, rbegin, rend);		
+		m_holder = new Holder<value_type, BidirectionalIterator>(begin, end);		
 	}
 	
 	my_Ty& operator++() override {m_holder->increment(); return *this;}
@@ -95,9 +89,7 @@ public:
 	value_type& operator*() override {return m_holder->getValue();};
 	
 	my_Ty& to_begin(){m_holder->to_begin(); return *this;}
-	my_Ty& to_rbegin(){m_holder->to_rbegin(); return *this;}
 	bool in_end(){return m_holder->in_end();};
-	bool in_rend(){return m_holder->in_rend();};	
 	value_type getValue() const {return m_holder->getValue();}
 	
 	~Range(){delete m_holder;}	

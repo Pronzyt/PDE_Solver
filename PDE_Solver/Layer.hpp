@@ -40,29 +40,29 @@ void Layer<Ty>::setRange(range_type range)
 template<typename Ty>
 bool Layer<Ty>::forward_recount_step()
 {
-	range_type temp = m_range;
+	range_type temp = m_f_range;
 	this->m_f_recount_func(temp);
-	++m_range;
-	return m_range.in_end();
+	++m_f_range;
+	return m_f_range.in_end();
 }
 
 template<typename Ty>
 bool Layer<Ty>::backward_recount_step()
 {
-	range_type temp = m_range;
+	range_type temp = m_r_range;
 	this->m_b_recount_func(temp);
-	--m_range;
-	return m_range.in_rend();
+	++m_r_range;
+	return m_r_range.in_end();
 }
 
-//template<typename Ty>
-//void Layer<Ty>::resetForward()
-//{
-//	m_range.to_begin();
-//}
-//
-//template<typename Ty>
-//void Layer<Ty>::resetBackward()
-//{
-//	m_range.to_rbegin();
-//}
+template<typename Ty>
+void Layer<Ty>::resetForward()
+{
+	m_f_range.to_begin();
+}
+
+template<typename Ty>
+void Layer<Ty>::resetBackward()
+{
+	m_r_range.to_begin();
+}
