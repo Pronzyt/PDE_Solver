@@ -17,7 +17,7 @@ struct State{
 	double value;	//current value
 };
 
-using BundleEx1 =  Bundle<State>;
+using BundleEx1 = Bundle<State>;
 using LayerEx1 = BundleEx1::Layer;
 using Space1DEx1 = BundleEx1::Space1D;
 using IteratorEx1 = BundleEx1::Iterator;
@@ -53,11 +53,11 @@ double b = a * tau / (2 * h * h);
 State init(Space1DEx1::size_type x)
 {
 	if (x == 0)
-		return {0, 0, t_left, 0, t_left};
+		return{ 0, 0, t_left, 0, t_left };
 	else if (x == N - 1)
-		return {0, 0, 0, 0, t_right};
+		return{ 0, 0, 0, 0, t_right };
 	else
-		return {a, 0, 0, tau, t_begin};
+		return{ a, 0, 0, tau, t_begin };
 }
 
 //left-side boundary condition (1st type)
@@ -69,14 +69,14 @@ State& recountForward1(IteratorEx1& arg)
 State& recountBackward1(IteratorEx1& arg)
 {
 	return *arg;
-}; 
+};
 
 //heat transmition in not boundary layer
 State& recountForward2(IteratorEx1& arg)
 {
 	static const double part = 1 + 2 * b;
 	--arg;
-	State& prev = *arg;	
+	State& prev = *arg;
 	double denom = part - b * prev.alpha;
 	double temp = prev.beta + prev.value;
 	State& curr = *++arg;
@@ -107,12 +107,12 @@ State& recountBackward3(IteratorEx1& arg)
 
 void runExample1()
 {
-	Space1DEx1 space(N + 1, init);	
+	Space1DEx1 space(N + 1, init);
 	std::vector<LayerEx1*> v = std::vector<LayerEx1*>(3);
-	v.push_back(new LayerEx1(space.getRange(0, 0), recountForward1, recountBackward1)); 
-	v.push_back(new LayerEx1(space.getRange(1, N - 1), recountForward2, recountBackward2)); 
-	v.push_back(new LayerEx1(space.getRange(N, N), recountForward3, recountBackward3)); 
-	
+	v.push_back(new LayerEx1(space.getRange(0, 0), recountForward1, recountBackward1));
+	v.push_back(new LayerEx1(space.getRange(1, N - 1), recountForward2, recountBackward2));
+	v.push_back(new LayerEx1(space.getRange(N, N), recountForward3, recountBackward3));
+
 	for (auto it = v.begin(); it != v.end(); ++it)
 	{
 		LayerEx1& curr = **it;
@@ -132,7 +132,7 @@ void runExample1()
 		stream << std::to_string(distance) << " " << std::to_string(it->value) << "\n";
 		distance += h;
 	};
-	
+
 	stream.close();
 
 };
@@ -143,7 +143,7 @@ int main()
 	runExample1();
 	return 0;
 }
-		
+
 
 
 
