@@ -1,6 +1,7 @@
 #ifndef RANGE_H
 #define	RANGE_H
 
+
 template<typename Ty>
 class BaseHolder{
 public:
@@ -31,10 +32,11 @@ static_assert(std::is_same<typename BidirectionalIterator::value_type, Ty>::valu
 		typedef typename my_Ty::value_type value_type;		
 		typedef BidirectionalIterator iterator_type;
 		Holder() = delete;
-		Holder(iterator_type first, iterator_type last) : m_begin(first), 
-														  m_rbegin(last),
-														  m_end(++last),
-														  m_rend(--first){};
+		Holder(iterator_type begin, iterator_type end, iterator_type rbegin, iterator_type rend) 
+			: m_begin(begin),
+			m_rbegin(rbegin),
+			m_end(end),
+			m_rend(rend){};
 		my_Ty* clone() const override {return new my_Ty(*this);};		
 		void increment() override {++m_current;};
 		void decrement() override {--m_current;};
@@ -81,9 +83,9 @@ public:
 	}
 	
 	template<typename BidirectionalIterator>
-	Range(BidirectionalIterator first, BidirectionalIterator last)
+	Range(BidirectionalIterator begin, BidirectionalIterator end, BidirectionalIterator end)
 	{
-		m_holder = new Holder<value_type, BidirectionalIterator>(first, last);		
+		//m_holder = new Holder<value_type, BidirectionalIterator>(begin, end, rbegin, rend);		
 	}
 	
 	my_Ty& operator++() override {m_holder->increment(); return *this;}

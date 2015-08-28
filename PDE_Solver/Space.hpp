@@ -48,9 +48,5 @@ typename Space1D<Ty>::value_type Space1D<Ty>::operator [](int i)
 template<typename Ty>
 Range<typename Space1D<Ty>::value_type> Space1D<Ty>::getRange(size_type from, size_type to)
 {
-	auto first = m_container.begin();
-	auto last = m_container.begin();
-	std::advance(first, from);
-	std::advance(last, to);
-	return Range<value_type>(first, last);
+	return Range<value_type>(m_container.begin(), m_container.end(), m_container.rbegin(), m_container.rend());
 }
