@@ -27,7 +27,8 @@ public:
 	const_iterator cend();
 	value_type operator[](int i);
 	size_type size();	
-	Range<value_type> getRange(size_type from, size_type to);
+	iterator getIterator(size_type pos);
+	//Range<value_type> getRange(size_type from, size_type to);
 private:
 	container_type m_container;
 };

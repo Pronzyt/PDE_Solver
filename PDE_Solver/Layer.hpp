@@ -25,22 +25,24 @@ BaseLayer<Ty>::~BaseLayer(){}
 //}
 
 template<typename Ty>
-Layer<Ty>::Layer(range_type range, recount_func f_func, recount_func b_func)
+template<typename BidirectionalIterator>
+Layer<Ty>::Layer(BidirectionalIterator from, BidirectionalIterator to, recount_func f_func, recount_func b_func)
 	: BaseLayer<Ty>(f_func, b_func),
-	m_range(range)
+	m_f_range(from, to),
+	m_r_range(from, to)
 {}
 
 
-template<typename Ty>
-void Layer<Ty>::setRange(range_type range)
-{
-	m_range = range;
-}
+//template<typename Ty>
+//void Layer<Ty>::setRange(range_type range)
+//{
+//	m_f_range = range;
+//}
 
 template<typename Ty>
 bool Layer<Ty>::forward_recount_step()
 {
-	range_type temp = m_f_range;
+	auto temp = m_f_range;
 	this->m_f_recount_func(temp);
 	++m_f_range;
 	return m_f_range.in_end();
@@ -49,7 +51,7 @@ bool Layer<Ty>::forward_recount_step()
 template<typename Ty>
 bool Layer<Ty>::backward_recount_step()
 {
-	range_type temp = m_r_range;
+	auto temp = m_r_range;
 	this->m_b_recount_func(temp);
 	++m_r_range;
 	return m_r_range.in_end();

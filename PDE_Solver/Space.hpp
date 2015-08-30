@@ -46,7 +46,15 @@ typename Space1D<Ty>::value_type Space1D<Ty>::operator [](int i)
 }
 
 template<typename Ty>
-Range<typename Space1D<Ty>::value_type> Space1D<Ty>::getRange(size_type from, size_type to)
+typename Space1D<Ty>::iterator Space1D<Ty>::getIterator(size_type pos)
 {
-	return Range<value_type>(m_container.begin(), m_container.end(), m_container.rbegin(), m_container.rend());
+	iterator temp = m_container.begin();
+	std::advance(temp, pos);
+	return temp;
 }
+
+//template<typename Ty>
+//Range<typename Space1D<Ty>::value_type> Space1D<Ty>::getRange(size_type from, size_type to)
+//{
+//	return Range<value_type>(m_container.begin(), m_container.end());
+//}

@@ -33,21 +33,22 @@ class Layer: public BaseLayer<Ty>{
 public:
 	typedef Layer<Ty> my_Ty;
 	typedef typename my_Ty::value_type value_type;
-	typedef Range<value_type> range_type;
 	typedef typename my_Ty::recount_func recount_func;
 	Layer() = delete;
-	Layer(range_type range, recount_func f_func, recount_func b_func);
+	template<typename BidirectionalIterator>
+	Layer(BidirectionalIterator from, BidirectionalIterator to, recount_func f_func, recount_func b_func);
 	Layer(const Layer& rhs) : BaseLayer<Ty>(rhs), m_range(rhs.m_range){};
-	void setRange(range_type range);	
+//	void setRange(range_type range);	
 	virtual bool forward_recount_step() override;
 	virtual bool backward_recount_step() override;
 	virtual void resetForward() override;
 	virtual void resetBackward() override;
 	virtual ~Layer() override{};
 private:
-	range_type m_f_range;
-	range_type m_r_range;
+	FRange<value_type> m_f_range;
+	RRange<value_type> m_r_range;
 };
+
 
 //class BaseBoundaryCondition: public BaseLayer{
 //public:

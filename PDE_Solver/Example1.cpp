@@ -108,10 +108,10 @@ State& recountBackward3(IteratorEx1& arg)
 void runExample1()
 {
 	Space1DEx1 space(N + 1, init);
-	std::vector<LayerEx1*> v = std::vector<LayerEx1*>(3);
-	v.push_back(new LayerEx1(space.getRange(0, 0), recountForward1, recountBackward1));
-	v.push_back(new LayerEx1(space.getRange(1, N - 1), recountForward2, recountBackward2));
-	v.push_back(new LayerEx1(space.getRange(N, N), recountForward3, recountBackward3));
+	std::vector<LayerEx1*> v;
+	v.push_back(new LayerEx1(space.getIterator(0), space.getIterator(0), recountForward1, recountBackward1));
+	v.push_back(new LayerEx1(space.getIterator(1), space.getIterator(N - 1), recountForward2, recountBackward2));
+	v.push_back(new LayerEx1(space.getIterator(N), space.getIterator(N), recountForward3, recountBackward3));
 
 	for (auto it = v.begin(); it != v.end(); ++it)
 	{
@@ -125,15 +125,15 @@ void runExample1()
 		while (!curr.backward_recount_step()){};
 	};
 
-	double distance = 0;
-	std::ofstream stream("test.txt");
-	for (auto it = space.begin(); it != space.end(); ++it)
-	{
-		stream << std::to_string(distance) << " " << std::to_string(it->value) << "\n";
-		distance += h;
-	};
+	//double distance = 0;
+	//std::ofstream stream("test.txt");
+	//for (auto it = space.begin(); it != space.end(); ++it)
+	//{
+	//	stream << std::to_string(distance) << " " << std::to_string(it->value) << "\n";
+	//	distance += h;
+	//};
 
-	stream.close();
+	//stream.close();
 
 };
 

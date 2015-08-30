@@ -11,9 +11,7 @@ public:
 	virtual void increment() = 0;
 	virtual void decrement() = 0;
 	virtual void to_begin() = 0;
-	virtual void to_rbegin() = 0;
 	virtual bool in_end() = 0;
-	virtual bool in_rend() = 0;
 	virtual value_type& getValue() = 0;
 	virtual ~BaseHolder() = 0;
 };
@@ -34,7 +32,9 @@ static_assert(std::is_same<typename BidirectionalIterator::value_type, Ty>::valu
 		Holder() = delete;
 		Holder(iterator_type begin, iterator_type end) 
 			: m_begin(begin),
-			m_end(end){};
+			m_end(end)
+		
+		{};
 		my_Ty* clone() const override {return new my_Ty(*this);};		
 		void increment() override {++m_current;};
 		void decrement() override {--m_current;};
@@ -67,19 +67,12 @@ public:
 	typedef Ty value_type;
 	typedef Range<Ty> my_Ty;
 	
-	Range() = delete;
 	Range(const Range& rhs){m_holder = rhs.m_holder->clone();}
 	Range& operator=(const Range& rhs)
 	{
 		delete m_holder;
 		m_holder = rhs.m_holder->clone();
 		return *this;
-	}
-	
-	template<typename BidirectionalIterator>
-	Range(BidirectionalIterator begin, BidirectionalIterator end)
-	{
-		m_holder = new Holder<value_type, BidirectionalIterator>(begin, end);		
 	}
 	
 	my_Ty& operator++() override {m_holder->increment(); return *this;}
@@ -93,11 +86,33 @@ public:
 	value_type getValue() const {return m_holder->getValue();}
 	
 	~Range(){delete m_holder;}	
-private:
+
+protected:
+	Range(){};
 	BaseHolder<value_type>* m_holder = 0;
 };
 
 
+template<typename Ty>
+class FRange: public Range<Ty>{
+public:
+	template<typename BidirectionalIterator>
+	FRange(BidirectionalIterator from, BidirectionalIterator to)
+	{
+		m_holder = new Holder<value_type, BidirectionalIterator>(from, ++to);
+	}
+};
+
+
+template<typename Ty>
+class RRange : public Range<Ty>{
+public:
+	template<typename BidirectionalIterator>
+	RRange(BidirectionalIterator from, BidirectionalIterator to)
+	{
+		m_holder = new Holder<value_type, BidirectionalIterator>(from, ++to);
+	}
+};
 
 #endif	/* RANGE_H */
 
