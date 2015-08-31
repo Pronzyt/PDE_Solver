@@ -37,7 +37,7 @@ public:
 	Layer() = delete;
 	template<typename BidirectionalIterator>
 	Layer(BidirectionalIterator from, BidirectionalIterator to, recount_func f_func, recount_func b_func);
-	Layer(const Layer& rhs) : BaseLayer<Ty>(rhs), m_range(rhs.m_range){};
+//	Layer(const Layer& rhs) : BaseLayer<Ty>(rhs), m_range(rhs.m_range){};
 //	void setRange(range_type range);	
 	virtual bool forward_recount_step() override;
 	virtual bool backward_recount_step() override;
