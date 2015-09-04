@@ -8,6 +8,7 @@
 #include "Bundle.h"
 
 void runExample1();
+void runExample2();
 
 
 

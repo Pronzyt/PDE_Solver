@@ -8,10 +8,10 @@ namespace Example1{
 struct State;
 
 
-using BundleEx1 = Bundle<State>;
-using LayerEx1 = BundleEx1::Layer;
-using Space1DEx1 = BundleEx1::Space1D;
-using IteratorEx1 = BundleEx1::Iterator;
+using Bundle = Bundle<State>;
+using Layer = Bundle::Layer;
+using Space1D = Bundle::Space1D;
+using Iterator = Bundle::Iterator;
 
 
 //Создаем структуру, в которой хранятся значения 
@@ -52,7 +52,7 @@ double h = L / N;
 //constant
 double b = a * tau / (2 * h * h);
 
-State init(Space1DEx1::size_type x)
+State init(Space1D::size_type x)
 {
 	if (x == 0)
 		return{x, 0, 0, t_left, 0, t_left };
@@ -63,21 +63,21 @@ State init(Space1DEx1::size_type x)
 }
 
 //left-side boundary condition (1st type)
-State& recountForward1(IteratorEx1& arg)
+State& recountForward1(Iterator& arg)
 {
 	State& curr = *arg;
 	return *arg;
 };
 
 //
-State& recountBackward1(IteratorEx1& arg)
+State& recountBackward1(Iterator& arg)
 {
 	State& curr = *arg;
 	return *arg;
 };
 
 //heat transmition in not boundary layer
-State& recountForward2(IteratorEx1& arg)
+State& recountForward2(Iterator& arg)
 {
 //	static const double part = 1 + 2 * b;
 //	--arg;
@@ -102,7 +102,7 @@ State& recountForward2(IteratorEx1& arg)
 	return curr;
 };
 
-State& recountBackward2(IteratorEx1& arg)
+State& recountBackward2(Iterator& arg)
 {
 	State& curr = *arg;
 	State& prev = *--arg;
@@ -111,13 +111,13 @@ State& recountBackward2(IteratorEx1& arg)
 };
 
 //right-side boundary condition
-State& recountForward3(IteratorEx1& arg)
+State& recountForward3(Iterator& arg)
 {
 	State& curr = *arg;
 	return *arg;
 };
 
-State& recountBackward3(IteratorEx1& arg)
+State& recountBackward3(Iterator& arg)
 {
 	State& curr = *arg;
 	return *arg;
@@ -126,25 +126,25 @@ State& recountBackward3(IteratorEx1& arg)
 
 void run()
 {
-	Space1DEx1 space(N + 1, init);
-	std::vector<LayerEx1*> v;
-	v.push_back(new LayerEx1(space.getIterator(0), space.getIterator(0), recountForward1, recountBackward1));
-	v.push_back(new LayerEx1(space.getIterator(1), space.getIterator(N - 1), recountForward2, recountBackward2));
-	v.push_back(new LayerEx1(space.getIterator(N), space.getIterator(N), recountForward3, recountBackward3));
+	Space1D space(N + 1, init);
+	std::vector<Layer*> v;
+	v.push_back(new Layer(space.getIterator(0), space.getIterator(0), recountForward1, recountBackward1));
+	v.push_back(new Layer(space.getIterator(1), space.getIterator(N - 1), recountForward2, recountBackward2));
+	v.push_back(new Layer(space.getIterator(N), space.getIterator(N), recountForward3, recountBackward3));
 
 	double current_time = 0;
 	while (current_time < time_end)
 	{
 		for (auto it = v.begin(); it != v.end(); ++it)
 		{
-			LayerEx1& curr = **it;
+			Layer& curr = **it;
 			curr.resetForward();
 			while (!curr.forward_recount_step()){};
 		};
 
 		for (auto rit = v.rbegin(); rit != v.rend(); ++rit)
 		{
-			LayerEx1& curr = **rit;
+			Layer& curr = **rit;
 			curr.resetBackward();
 			while (!curr.backward_recount_step()){};
 		};		
@@ -163,9 +163,7 @@ void run()
 		//stream << std::to_string(distance) << " " << std::to_string(it->value) << "\n";
 		distance += h;
 	};
-
 	stream.close();
-
 };
 
 };
