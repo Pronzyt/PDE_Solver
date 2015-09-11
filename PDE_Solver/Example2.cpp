@@ -80,27 +80,36 @@ State& recountBackward1(Iterator& arg)
 //heat transmission in not boundary layer
 State& recountForward2(Iterator& arg)
 {
-	static const double part = 1 + 2 * b;
-	State& prev = *(--arg);
-	State& curr = *(++arg);
-	State& next = *(++arg);
-	double denom = part - b * prev.alpha * (1 - 1 / (2 * curr.num));
-	curr.alpha = b * (1 + 1 / (2 * curr.num)) / denom;
-	double F1 = curr.value + b * (next.value * (1 + 1 / (2 * curr.num)) - 2 * curr.value + prev.value *(1 - 1 / (2 * curr.num)));
-	double F2 = b * prev.beta * (1 - 1 / (2 * curr.num)) + F1;
-	curr.beta = F2 / denom;
+//	static const double part = 1 + 2 * b;
+//	State& prev = *(--arg);
+//	State& curr = *(++arg);
+//	State& next = *(++arg);
+//	double denom = part - b * prev.alpha * (1 - 1 / (2 * curr.num));
+//	curr.alpha = b * (1 + 1 / (2 * curr.num)) / denom;
+//	double F1 = curr.value + b * (next.value * (1 + 1 / (2 * curr.num)) - 2 * curr.value + prev.value *(1 - 1 / (2 * curr.num)));
+//	double F2 = b * prev.beta * (1 - 1 / (2 * curr.num)) + F1;
+//	curr.beta = F2 / denom;
 //-------------------TEST----------------------------------------------------------
+//	State& prev = *(--arg);
+//	State& curr = *(++arg);
+//	State& next = *(++arg);
+//	double r_l = (prev.num * h + curr.num * h) / 2;
+//	double r_r = (curr.num * h + next.num * h) / 2;
+//	double r = h * curr.num;
+//	double A = lambda / (h * h) * r_r / r;
+//	double B = lambda / (h * h) * (r_l + r_r) / r + rho * c / tau;
+//	double C = lambda / (h * h) * r_l / r;
+//	double F = - rho * c / tau * curr.value;
+//	curr.alpha = A / (B - C * prev.alpha);
+//	curr.beta = (C * prev.beta - F) / (B - C * prev.alpha); 
+//-----------------------------------------------------------------------------------
 	State& prev = *(--arg);
 	State& curr = *(++arg);
 	State& next = *(++arg);
-	double r_l = (prev.num * h + curr.num * h) / 2;
-	double r_r = (curr.num * h + next.num * h) / 2;
-	double r = h * curr.num;
-	double A = lambda / (h * h) * r_r / r;
-	double B = lambda / (h * h) * (r_l + r_r) / r + rho * c / tau;
-	double C = lambda / (h * h) * r_l / r;
-	double F = - rho * c / tau * curr.value;
-//-----------------------------------------------------------------------------------
+	double temp = b / (2 * curr.num);
+	double denom = - 2 * b - 1 + prev.alpha * (b - temp);
+	curr.alpha = - (b + temp) / denom; 
+	curr.beta = - (prev.beta * (b - temp) + next.value * (temp + b) + curr.value * (- 2 * b + 1) + prev.value * (b - temp)) / denom;
 	return curr;
 };
 
