@@ -28,7 +28,7 @@ struct State{
 unsigned N = 100;
 
 
-//parameters of steel
+//parameters of brick
 double lambda = 0.7;
 double rho = 1500;
 double c = 750;
@@ -163,7 +163,7 @@ void run()
 	};
 
 	double distance = 0;
-	std::ofstream stream("test.txt");
+	std::ofstream stream("example2.txt");
 	std::stringstream sstream;
 	for (auto it = space.begin(); it != space.end(); ++it)
 	{

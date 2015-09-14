@@ -52,6 +52,7 @@ double h = L / N;
 //constant
 double b = a * tau / (2 * h * h);
 
+//
 State init(Space1D::size_type x)
 {
 	if (x == 0)
@@ -79,25 +80,25 @@ State& recountBackward1(Iterator& arg)
 //heat transmition in not boundary layer
 State& recountForward2(Iterator& arg)
 {
-//	static const double part = 1 + 2 * b;
-//	--arg;
-//	State& prev = *arg;
-//	double denom = part - b * prev.alpha;
-//	double temp = prev.beta + prev.value;
-//	State& curr = *++arg;
-//	State& next = *++arg; 
-//	curr.alpha = b / denom;
-//	curr.beta = (b * (temp - 2 * curr.value + next.value) + curr.value) / denom;
-//-------------------TEST----------------------------------------------------------
-	State& curr = *arg;
+	static const double part = 1 + 2 * b;
 	--arg;
-	State& prev = *arg;	
-	double A  = lambda / (h * h);
-	double C = A;
-	double B = 2 * lambda / (h * h)  + rho * c / tau;
-	double F = - rho * c / tau * curr.value;
-	curr.alpha = A / (B - C * prev.alpha);
-	curr.beta = (C * prev.beta - F) / (B - C * prev.alpha);
+	State& prev = *arg;
+	double denom = part - b * prev.alpha;
+	double temp = prev.beta + prev.value;
+	State& curr = *++arg;
+	State& next = *++arg; 
+	curr.alpha = b / denom;
+	curr.beta = (b * (temp - 2 * curr.value + next.value) + curr.value) / denom;
+//-------------------TEST----------------------------------------------------------
+	//State& curr = *arg;
+	//--arg;
+	//State& prev = *arg;	
+	//double A  = lambda / (h * h);
+	//double C = A;
+	//double B = 2 * lambda / (h * h)  + rho * c / tau;
+	//double F = - rho * c / tau * curr.value;
+	//curr.alpha = A / (B - C * prev.alpha);
+	//curr.beta = (C * prev.beta - F) / (B - C * prev.alpha);
 //-----------------------------------------------------------------------------------
 	return curr;
 };
@@ -152,7 +153,7 @@ void run()
 	};
 
 	double distance = 0;
-	std::ofstream stream("test.txt");
+	std::ofstream stream("example1.txt");
 	std::stringstream sstream;
 	for (auto it = space.begin(); it != space.end(); ++it)
 	{

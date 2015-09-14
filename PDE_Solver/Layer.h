@@ -2,6 +2,7 @@
 #define LAYER_H
 
 #include <iterator>
+#include <functional>
 #include "Range.h"
 
 
@@ -10,8 +11,9 @@ class BaseLayer{
 public:
 	typedef BaseLayer<Ty> my_Ty;
 	typedef Ty value_type;
-	typedef IRange<Range<value_type>, value_type> iterator; //Создать интерфейс
-	typedef value_type&(*recount_func)(iterator&);
+	typedef IRange<Range<value_type>, value_type> iterator;
+	//typedef value_type&(*recount_func)(iterator&);
+	typedef std::function<value_type&(iterator&)> recount_func;
 	BaseLayer(const BaseLayer& rhs) : m_f_recount_func(rhs.m_f_recount_func),
 									  m_b_recount_func(rhs.m_b_recount_func){};
 //	virtual void setForwardFunc(recount_func func);
@@ -49,12 +51,6 @@ private:
 	RRange<value_type> m_r_range;
 };
 
-
-//class BaseBoundaryCondition: public BaseLayer{
-//public:
-//	BaseBoundaryCondition();
-//        void setBound(state_iterator bound);        
-//};
 
 #include "Layer.hpp"
 

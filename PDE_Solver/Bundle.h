@@ -5,7 +5,6 @@
 #include "Layer.h"
 
 
-//This class is declared only for readability improvment and will be removed soon
 template<typename StateTy>
 class Bundle{
 	public:
@@ -15,6 +14,7 @@ class Bundle{
 		typedef IRange<Range, state_type>		Iterator;
 		typedef BaseLayer<state_type>			BaseLayer;
 		typedef Layer<state_type>				Layer;
+		typedef typename Layer::recount_func	recount_func;
 	private:
 			
 };

@@ -3,7 +3,7 @@
 
 int main()
 {
-	runExample2();
+	runExample3();
 	
 	
     return 0;
