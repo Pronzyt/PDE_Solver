@@ -34,9 +34,7 @@ static_assert(std::is_same<typename BidirectionalIterator::value_type, Ty>::valu
 			: m_begin(begin),
 			m_end(end)
 		
-		{
-			typename iterator_type::value_type& temp = *begin;
-		};
+		{};
 		my_Ty* clone() const override {return new my_Ty(*this);};		
 		void increment() override {++m_current;};
 		void decrement() override {--m_current;};
@@ -115,10 +113,10 @@ public:
 	RRange(BidirectionalIterator from, BidirectionalIterator to)
 	{
 		typedef std::reverse_iterator<BidirectionalIterator> RIter;
-		typename BidirectionalIterator::value_type& temp0 = *to;
-		typename RIter::value_type& temp1 = *RIter(++to);
-		typename RIter::value_type& temp2 = *RIter(from);
-		Range<Ty>::m_holder = new Holder<value_type, RIter>(RIter(to), RIter(from));
+		//typename BidirectionalIterator::value_type& temp0 = *to;
+		//typename RIter::value_type& temp1 = *RIter(++to);
+		//typename RIter::value_type& temp2 = *RIter(from);
+		Range<Ty>::m_holder = new Holder<value_type, RIter>(RIter(++to), RIter(from));
 	}
 };
 
