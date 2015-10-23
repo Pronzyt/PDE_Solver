@@ -1,4 +1,4 @@
-template<typename Ty>
+﻿template<typename Ty>
 BaseLayer<Ty>::BaseLayer(recount_func f_func, recount_func b_func)
 	:m_f_recount_func(f_func), m_b_recount_func(b_func)
 {}

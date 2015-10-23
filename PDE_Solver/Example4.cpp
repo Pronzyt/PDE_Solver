@@ -1,7 +1,11 @@
-#include "Examples.h"
+ï»¿#include "Examples.h"
 
-/*Â ýòîì ïðèìåðå áóäåò ðàññìîòðåí ñïîñîá ðåøåíèÿ ñèñòåìû íåëèíåéíûõ óðàâíåíèé ìåòîäîì èòåðàöèè
-Çàäà÷à òà æå, ÷òî è â ïðèìåðå ¹3 */
+
+/*Ð’ ÑÑ‚Ð¾Ð¼ Ð¿Ñ€Ð¸Ð¼ÐµÑ€Ðµ Ð±ÑƒÐ´ÐµÑ‚ Ñ€Ð°ÑÑÐ¼Ð¾Ñ‚Ñ€ÐµÐ½ ÑÐ¿Ð¾ÑÐ¾Ð± Ñ€ÐµÑˆÐµÐ½Ð¸Ñ ÑÐ¸ÑÑ‚ÐµÐ¼Ñ‹ Ð½ÐµÐ»Ð¸Ð½ÐµÐ¹Ð½Ñ‹Ñ… ÑƒÑ€Ð°Ð²Ð½ÐµÐ½Ð¸Ð¹ Ð¼ÐµÑ‚Ð¾Ð´Ð¾Ð¼ Ð¸Ñ‚ÐµÑ€Ð°Ñ†Ð¸Ð¸
+Ð—Ð°Ð´Ð°Ñ‡Ð° Ñ‚Ð° Ð¶Ðµ, Ñ‡Ñ‚Ð¾ Ð¸ Ð² Ð¿Ñ€Ð¸Ð¼ÐµÑ€Ðµ â„–3 (Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð° Ð¿Ð¾ÑÑ‚Ð¾ÑÐ½Ð½Ð°Ñ sigma Ð² ÑÐ¾Ð¾Ñ‚Ð²ÐµÑ‚ÑÑ‚Ð²Ð¸Ð¸ Ñ Ð·Ð°ÐºÐ¾Ð½Ð¾Ð¼)
+----------------------------------------------------------------------------------------------
+Ð’Ñ‹Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ñ ÑƒÑÑ‚Ð¾Ð¹Ñ‡Ð¸Ð²Ñ‹Ðµ Ð¿Ñ€Ð¸ Ð·Ð°Ð´Ð°Ð½Ð½Ñ‹Ñ… Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸ÑÑ…, Ð² ÑÐ»ÐµÐ´ÑƒÑŽÑ‰Ð¸Ñ… Ð¿Ñ€Ð¸Ð¼ÐµÑ€Ð°Ñ… Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ð¾ Ð¾Ñ†ÐµÐ½Ð¸Ñ‚ÑŒ Ð¾ÑˆÐ¸Ð±ÐºÑƒ 
+Ð¸ Ð¿Ñ€Ð¾Ð¸Ð·Ð²ÐµÑÑ‚Ð¸ Ñ€Ð°ÑÑ‡ÐµÑ‚Ñ‹ Ð½Ð° ÑÐ¸Ð¼Ð¼ÐµÑ‚Ñ€Ð¸Ñ‡Ð½Ñ‹Ñ… Ð¾Ð±ÑŠÐµÐºÑ‚Ð°Ñ…*/
 
 namespace Example4{
 
@@ -15,7 +19,7 @@ namespace Example4{
 	using recount_func = Bundle::recount_func;
 	using size_type = Space1D::size_type;
 
-	//Ñîçäàåì ñòðóêòóðó, â êîòîðîé õðàíÿòñÿ çíà÷åíèÿ 
+	//Ð¡Ð¾Ð·Ð´Ð°ÐµÐ¼ ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ñƒ, Ð² ÐºÐ¾Ñ‚Ð¾Ñ€Ð¾Ð¹ Ñ…Ñ€Ð°Ð½ÑÑ‚ÑÑ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ñ 
 	struct State{
 		size_type num;
 		double alpha;
@@ -34,16 +38,16 @@ namespace Example4{
 	double lambda3 = 7.3;
 
 	//sigma
-	double sigma = 4.88e-4;
+	double sigma = 5.67e-8;
 
 	//init values
-	double t_left = 703;
+	double t_left = 1403;
 	double t_right = 303;
 	double t_begin = 303;
 
 	//time
-	double time_end = 0.2;
-	double time_step_num = 1000;
+	double time_end = 720;
+	double time_step_num = 10000;
 	double tau = time_end / time_step_num;
 
 
@@ -51,10 +55,10 @@ namespace Example4{
 
 	//size
 	double L = 0.2;
-	double h = 0.0001;
-	size_type N1 = 600;
-	size_type N2 = 1600;
-	size_type N3 = 2000;
+	double h = 0.001;
+	size_type N1 = 60;
+	size_type N2 = 160;
+	size_type N3 = 200;
 
 	//
 	State init(size_type num)
@@ -79,10 +83,11 @@ namespace Example4{
 		return *arg;
 	};
 
-	//Ãåíåðàòîð èòåðàöèé ïåðåñ÷åòà òåìïåðàòóðû â ñëîå
-	recount_func generator(double a, double tau, double h)
+	//Ð“ÐµÐ½ÐµÑ€Ð°Ñ‚Ð¾Ñ€ Ð¸Ñ‚ÐµÑ€Ð°Ñ†Ð¸Ð¹ Ð¿ÐµÑ€ÐµÑÑ‡ÐµÑ‚Ð° Ñ‚ÐµÐ¼Ð¿ÐµÑ€Ð°Ñ‚ÑƒÑ€Ñ‹ Ð² ÑÐ»Ð¾Ðµ
+	recount_func generator(double a, double h)
 	{
 		double k = a * tau / (h * h);
+		double test = tau;
 		return[k](Iterator& arg)->State&
 		{
 			State& next = *++arg;
@@ -93,28 +98,28 @@ namespace Example4{
 		};
 	}
 
-	//Ãåíåðàòîð èòåðàöèé ïåðåñ÷åòà òåìïåðàòóðû íà ëåâîé ãðàíèöå
-	recount_func generatorBoundaryLeft(double h)
+	//Ð“ÐµÐ½ÐµÑ€Ð°Ñ‚Ð¾Ñ€ Ð¸Ñ‚ÐµÑ€Ð°Ñ†Ð¸Ð¹ Ð¿ÐµÑ€ÐµÑÑ‡ÐµÑ‚Ð° Ñ‚ÐµÐ¼Ð¿ÐµÑ€Ð°Ñ‚ÑƒÑ€Ñ‹ Ð½Ð° Ð»ÐµÐ²Ð¾Ð¹ Ð³Ñ€Ð°Ð½Ð¸Ñ†Ðµ
+	recount_func generatorBoundaryLeft(double h, double lambda)
 	{
-		return[h](Iterator& arg)->State&
+		return[h, lambda](Iterator& arg)->State&
 		{
 			State& next = *++arg;
 			State& curr = *--arg;
 			State& prev = *--arg;
-			curr.value = prev.value + sigma * h * (std::pow(next.value, 4) - std::pow(curr.value, 4));
+			curr.value = prev.value + sigma * h * (std::pow(next.value, 4) - std::pow(curr.value, 4)) / lambda;
 			return curr;
 		};
 	}
 
-	//Ãåíåðàòîð èòåðàöèé ïåðåñ÷åòà òåìïåðàòóðû íà ïðàâîé ãðàíèöå
-	recount_func generatorBoundaryRight(double h)
+	//Ð“ÐµÐ½ÐµÑ€Ð°Ñ‚Ð¾Ñ€ Ð¸Ñ‚ÐµÑ€Ð°Ñ†Ð¸Ð¹ Ð¿ÐµÑ€ÐµÑÑ‡ÐµÑ‚Ð° Ñ‚ÐµÐ¼Ð¿ÐµÑ€Ð°Ñ‚ÑƒÑ€Ñ‹ Ð½Ð° Ð¿Ñ€Ð°Ð²Ð¾Ð¹ Ð³Ñ€Ð°Ð½Ð¸Ñ†Ðµ
+	recount_func generatorBoundaryRight(double h, double lambda)
 	{
-		return[h](Iterator& arg)->State&
+		return[h, lambda](Iterator& arg)->State&
 		{
 			State& next = *++arg;
 			State& curr = *--arg;
 			State& prev = *--arg;
-			curr.value = next.value + sigma * h * (std::pow(prev.value, 4) - std::pow(curr.value, 4));
+			curr.value = next.value + sigma * h * (std::pow(prev.value, 4) - std::pow(curr.value, 4)) / lambda;
 			return curr;
 		};
 	}
@@ -131,13 +136,13 @@ namespace Example4{
 		Space1D space(N3 + 1, init);
 		std::vector<Layer*> v;
 		v.push_back(new Layer(space.getIterator(0), space.getIterator(0), constValueForward, empty));
-		v.push_back(new Layer(space.getIterator(1), space.getIterator(N1 - 1), generator(a1, lambda1, h), empty));
-		v.push_back(new Layer(space.getIterator(N1), space.getIterator(N1), generatorBoundaryLeft(h), empty));
-		v.push_back(new Layer(space.getIterator(N1 + 1), space.getIterator(N1 + 1), generatorBoundaryRight(h), empty));
-		v.push_back(new Layer(space.getIterator(N1 + 2), space.getIterator(N3 - 1), generator(a2, lambda2, h), empty));
-		//v.push_back(new Layer(space.getIterator(N2), space.getIterator(N2), boundaryGeneratorLeft(a2, lambda2, h), dynamicValueBackward));
-		//v.push_back(new Layer(space.getIterator(N2 + 1), space.getIterator(N2 + 1), boundaryGeneratorRight(a3, lambda3, h), dynamicValueBackward));
-		//v.push_back(new Layer(space.getIterator(N2 + 2), space.getIterator(N3 - 1), generator(a3, h), dynamicValueBackward));
+		v.push_back(new Layer(space.getIterator(1), space.getIterator(N1 - 1), generator(a1, h), empty));
+		v.push_back(new Layer(space.getIterator(N1), space.getIterator(N1), generatorBoundaryLeft(h, lambda1), empty));
+		v.push_back(new Layer(space.getIterator(N1 + 1), space.getIterator(N1 + 1), generatorBoundaryRight(h, lambda2), empty));
+		v.push_back(new Layer(space.getIterator(N1 + 2), space.getIterator(N3 - 1), generator(a2, h), empty));
+		v.push_back(new Layer(space.getIterator(N2), space.getIterator(N2), generatorBoundaryLeft(h, lambda2), empty));
+		v.push_back(new Layer(space.getIterator(N2 + 1), space.getIterator(N2 + 1), generatorBoundaryRight(h, lambda3), empty));
+		v.push_back(new Layer(space.getIterator(N2 + 2), space.getIterator(N3 - 1), generator(a3, h), empty));
 		v.push_back(new Layer(space.getIterator(N3), space.getIterator(N3), constValueForward, empty));
 		Layer restorer(space.getIterator(0), space.getIterator(N3), storeNewValues, empty);
 		double current_time = 0;
@@ -157,6 +162,7 @@ namespace Example4{
 			restorer.resetForward();
 			while (!restorer.forward_recount_step()){};
 			current_time += tau;
+			std::cout << current_time << "\n";
 		};
 
 		double distance = 0;

@@ -1,4 +1,4 @@
-#ifndef EXAMPLES_H
+﻿#ifndef EXAMPLES_H
 #define	EXAMPLES_H
 
 #include <vector>
@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <math.h>
+#include <iostream>
 #include "Bundle.h"
 
 void runExample1();

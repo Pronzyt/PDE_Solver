@@ -1,4 +1,4 @@
-#ifndef BUNDLE_H
+﻿#ifndef BUNDLE_H
 #define	BUNDLE_H
 
 #include "Space.h"
