@@ -22,8 +22,6 @@ namespace Example4{
 	//Создаем структуру, в которой хранятся значения 
 	struct State{
 		size_type num;
-		double alpha;
-		double beta;
 		double value;	//current value
 		double last_value; //value from previous time step
 	};
@@ -64,11 +62,11 @@ namespace Example4{
 	State init(size_type num)
 	{
 		if (num == 0)
-			return{ num, 0, t_left, t_left, t_left };
+			return{ num, t_left, t_left };
 		else if (num == N3)
-			return{ num, 0, 0, t_right, t_right };
+			return{ num, t_right, t_right };
 		else
-			return{ num, 0, 0, t_begin, t_begin };
+			return{ num, t_begin, t_begin };
 	}
 
 	State& empty(Iterator& arg)
@@ -87,7 +85,6 @@ namespace Example4{
 	recount_func generator(double a, double h)
 	{
 		double k = a * tau / (h * h);
-		double test = tau;
 		return[k](Iterator& arg)->State&
 		{
 			State& next = *++arg;

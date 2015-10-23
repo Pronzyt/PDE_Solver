@@ -13,6 +13,7 @@ void runExample1();
 void runExample2();
 void runExample3();
 void runExample4();
+void runExample5();
 
 
 #endif	/* EXAMPLES_H */
