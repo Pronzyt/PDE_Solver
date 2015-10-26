@@ -3,7 +3,8 @@
 
 int main()
 {
-	runExample5();
-		
+	runExample6();
+	char ch;
+	std::cin >> ch;
     return 0;
 }

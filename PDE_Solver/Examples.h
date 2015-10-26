@@ -14,6 +14,7 @@ void runExample2();
 void runExample3();
 void runExample4();
 void runExample5();
+void runExample6();
 
 
 #endif	/* EXAMPLES_H */

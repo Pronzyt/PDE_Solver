@@ -1,11 +1,11 @@
-#include "Examples.h"
+п»ї#include "Examples.h"
 
 
-/*В этом примере будет рассмотрен способ решения системы нелинейных уравнений методом итерации
-Задача та же, что и в примере №3 (изменена постоянная sigma в соответствии с законом)
+/*Р’ СЌС‚РѕРј РїСЂРёРјРµСЂРµ Р±СѓРґРµС‚ СЂР°СЃСЃРјРѕС‚СЂРµРЅ СЃРїРѕСЃРѕР± СЂРµС€РµРЅРёСЏ СЃРёСЃС‚РµРјС‹ РЅРµР»РёРЅРµР№РЅС‹С… СѓСЂР°РІРЅРµРЅРёР№ РјРµС‚РѕРґРѕРј РёС‚РµСЂР°С†РёРё
+Р—Р°РґР°С‡Р° С‚Р° Р¶Рµ, С‡С‚Рѕ Рё РІ РїСЂРёРјРµСЂРµ в„–3 (РёР·РјРµРЅРµРЅР° РїРѕСЃС‚РѕСЏРЅРЅР°СЏ sigma РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РєРѕРЅРѕРј)
 ----------------------------------------------------------------------------------------------
-В этом примере будет произведена оценка точности решения, а постоянное количество итераций будет
-заменено проверкой сходимости*/
+Р’ СЌС‚РѕРј РїСЂРёРјРµСЂРµ Р±СѓРґРµС‚ РїСЂРѕРёР·РІРµРґРµРЅР° РѕС†РµРЅРєР° С‚РѕС‡РЅРѕСЃС‚Рё СЂРµС€РµРЅРёСЏ, Р° РїРѕСЃС‚РѕСЏРЅРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РёС‚РµСЂР°С†РёР№ Р±СѓРґРµС‚
+Р·Р°РјРµРЅРµРЅРѕ РїСЂРѕРІРµСЂРєРѕР№ СЃС…РѕРґРёРјРѕСЃС‚Рё*/
 
 namespace Example5{
 
@@ -19,12 +19,13 @@ namespace Example5{
 	using recount_func = Bundle::recount_func;
 	using size_type = Space1D::size_type;
 
-	//Создаем структуру, в которой хранятся значения 
+	//РЎРѕР·РґР°РµРј СЃС‚СЂСѓРєС‚СѓСЂСѓ, РІ РєРѕС‚РѕСЂРѕР№ С…СЂР°РЅСЏС‚СЃСЏ Р·РЅР°С‡РµРЅРёСЏ 
 	struct State{
 		size_type num;
 		double value;	//current value
-		double prev_value;
+		double prev_value;	//value from previous iteration step
 		double last_value; //value from previous time step
+		bool is_enough;	
 		double error;	//error 
 	};
 
@@ -46,7 +47,7 @@ namespace Example5{
 	double t_begin = 303;
 
 	//time
-	double time_end = 50;
+	double time_end = 72;
 	double time_step_num = 1000;
 	double tau = time_end / time_step_num;
 
@@ -62,17 +63,17 @@ namespace Example5{
 
 
 	const double MAX_ITERATION_NUM = 100;
-	const double EPSILON = 0.1;
+	const double EPSILON = 0.001;
 
 	//
 	State init(size_type num)
 	{
 		if (num == 0)
-			return{ num, t_left, t_left, t_left, 0 };
+			return{ num, t_left, t_left, t_left, true, 0 };
 		else if (num == N3)
-			return{ num, t_right, t_right, t_right, 0 };
+			return{ num, t_right, t_right, t_right, true, 0 };
 		else
-			return{ num, t_begin, t_begin, t_begin, 0 };
+			return{ num, t_begin, t_begin, t_begin, false, 0 };
 	};
 
 	State& empty(Iterator& arg)
@@ -87,7 +88,7 @@ namespace Example5{
 		return *arg;
 	};
 
-	//Генератор итераций пересчета температуры в слое
+	//Р“РµРЅРµСЂР°С‚РѕСЂ РёС‚РµСЂР°С†РёР№ РїРµСЂРµСЃС‡РµС‚Р° С‚РµРјРїРµСЂР°С‚СѓСЂС‹ РІ СЃР»РѕРµ
 	recount_func generator(double a, double h)
 	{
 		double k = a * tau / (h * h);
@@ -98,12 +99,12 @@ namespace Example5{
 			State& prev = *--arg;
 			curr.prev_value = curr.value;
 			curr.value = (k * (next.value + prev.value) + curr.last_value) / (1 + 2 * k);
-			double test = std::abs(curr.value - prev.value);
+			curr.is_enough = (std::abs(curr.value - curr.prev_value) < EPSILON) && prev.is_enough;
 			return curr;
 		};
 	};
 
-	//Генератор итераций пересчета температуры на левой границе
+	//Р“РµРЅРµСЂР°С‚РѕСЂ РёС‚РµСЂР°С†РёР№ РїРµСЂРµСЃС‡РµС‚Р° С‚РµРјРїРµСЂР°С‚СѓСЂС‹ РЅР° Р»РµРІРѕР№ РіСЂР°РЅРёС†Рµ
 	recount_func generatorBoundaryLeft(double h, double lambda)
 	{
 		return[h, lambda](Iterator& arg)->State&
@@ -113,12 +114,12 @@ namespace Example5{
 			State& prev = *--arg;
 			curr.prev_value = curr.value;
 			curr.value = prev.value + sigma * h * (std::pow(next.value, 4) - std::pow(curr.value, 4)) / lambda;
-			double test = std::abs(curr.value - prev.value);
+			curr.is_enough = (std::abs(curr.value - curr.prev_value) < EPSILON) && prev.is_enough;
 			return curr;
 		};
 	};
 
-	//Генератор итераций пересчета температуры на правой границе
+	//Р“РµРЅРµСЂР°С‚РѕСЂ РёС‚РµСЂР°С†РёР№ РїРµСЂРµСЃС‡РµС‚Р° С‚РµРјРїРµСЂР°С‚СѓСЂС‹ РЅР° РїСЂР°РІРѕР№ РіСЂР°РЅРёС†Рµ
 	recount_func generatorBoundaryRight(double h, double lambda)
 	{
 		return[h, lambda](Iterator& arg)->State&
@@ -128,24 +129,26 @@ namespace Example5{
 			State& prev = *--arg;
 			curr.prev_value = curr.value;
 			curr.value = next.value + sigma * h * (std::pow(prev.value, 4) - std::pow(curr.value, 4)) / lambda;
-			double test = std::abs(curr.value - prev.value);
+			curr.is_enough = (std::abs(curr.value - curr.prev_value) < EPSILON) && prev.is_enough;
 			return curr;
 		};
 	};
 
-
+	//РџСЂРё РїРµСЂРµС…РѕРґРµ РЅР° СЃР»РµРґСѓСЋС‰РёР№ С€Р°Рі РїРѕ РІСЂРµРјРµРЅРё РЅРµРѕР±С…РѕРґРёРјРѕ СЃРєРѕРїРёСЂРѕРІР°С‚СЊ С‚РµРєСѓС‰РµРµ Р·РЅР°С‡РµРЅРёРµ С‚РµРјРїРµСЂР°С‚СѓСЂС‹, С‚Р°Рє РєР°Рє
+	//РѕРЅ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РїСЂРё СЂР°СЃС‡РµС‚Рµ
 	State& storeNewValues(Iterator& arg)
 	{
 		State& next = *++arg;
 		State& curr = *--arg;
 		State& prev = *--arg;
 		curr.last_value = curr.value;
+		curr.is_enough = false;
 		return *arg;
 	};
 
 
-	//Оценка происходит путем подстановки полученных значений в систему
-	//и вычисления модуля отклонения
+	//РћС†РµРЅРєР° РїСЂРѕРёСЃС…РѕРґРёС‚ РїСѓС‚РµРј РїРѕРґСЃС‚Р°РЅРѕРІРєРё РїРѕР»СѓС‡РµРЅРЅС‹С… Р·РЅР°С‡РµРЅРёР№ РІ СЃРёСЃС‚РµРјСѓ
+	//Рё РІС‹С‡РёСЃР»РµРЅРёСЏ РјРѕРґСѓР»СЏ РѕС‚РєР»РѕРЅРµРЅРёСЏ
 
 	recount_func generatorError(double a, double h)
 	{
@@ -189,8 +192,7 @@ namespace Example5{
 		Space1D space(N3 + 1, init);
 		std::vector<Layer*> recounter;
 
-		//Слои для пересчета значения 
-		recounter.push_back(new Layer(space.getIterator(0), space.getIterator(0), constValueForward, empty));
+		//РЎР»РѕРё РґР»СЏ РїРµСЂРµСЃС‡РµС‚Р° Р·РЅР°С‡РµРЅРёСЏ 
 		recounter.push_back(new Layer(space.getIterator(1), space.getIterator(N1 - 1), generator(a1, h), empty));
 		recounter.push_back(new Layer(space.getIterator(N1), space.getIterator(N1), generatorBoundaryLeft(h, lambda1), empty));
 		recounter.push_back(new Layer(space.getIterator(N1 + 1), space.getIterator(N1 + 1), generatorBoundaryRight(h, lambda2), empty));
@@ -198,9 +200,8 @@ namespace Example5{
 		recounter.push_back(new Layer(space.getIterator(N2), space.getIterator(N2), generatorBoundaryLeft(h, lambda2), empty));
 		recounter.push_back(new Layer(space.getIterator(N2 + 1), space.getIterator(N2 + 1), generatorBoundaryRight(h, lambda3), empty));
 		recounter.push_back(new Layer(space.getIterator(N2 + 2), space.getIterator(N3 - 1), generator(a3, h), empty));
-		recounter.push_back(new Layer(space.getIterator(N3), space.getIterator(N3), constValueForward, empty));
 
-		//Слои для оценки ошибки
+		//РЎР»РѕРё РґР»СЏ РѕС†РµРЅРєРё РѕС€РёР±РєРё
 		std::vector<Layer*> error_estimator;
 		error_estimator.push_back(new Layer(space.getIterator(1), space.getIterator(N1 - 1), generatorError(a1, h), empty));
 		error_estimator.push_back(new Layer(space.getIterator(N1), space.getIterator(N1), generatorBoundaryLeftError(h, lambda1), empty));
@@ -210,14 +211,15 @@ namespace Example5{
 		error_estimator.push_back(new Layer(space.getIterator(N2 + 1), space.getIterator(N2 + 1), generatorBoundaryRightError(h, lambda3), empty));
 		error_estimator.push_back(new Layer(space.getIterator(N2 + 2), space.getIterator(N3 - 1), generatorError(a3, h), empty));
 		
-		//Один общий слой для сохранения значений
+		//РћРґРёРЅ РѕР±С‰РёР№ СЃР»РѕР№ РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ Р·РЅР°С‡РµРЅРёР№
 		Layer restorer(space.getIterator(1), space.getIterator(N3 - 1), storeNewValues, empty);
 
 		double current_time = 0;
+		bool& term_cond = space.getIterator(N3 - 1)->is_enough;
 		while (current_time < time_end)
 		{
 			int i = 0;
-			while (i < 1)
+			while (!term_cond)
 			{
 				for (auto it = recounter.begin(); it != recounter.end(); ++it)
 				{
@@ -239,7 +241,7 @@ namespace Example5{
 			while (!restorer.forward_recount_step()){};
 
 			current_time += tau;
-			std::cout << current_time << "\n";
+			std::cout << "Time: " << current_time << " Number of iterations: " << i << "\n";
 		};
 
 		double distance = 0;
