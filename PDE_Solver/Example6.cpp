@@ -49,14 +49,16 @@ namespace Example6{
 	size_type N2 = 230;
 	size_type N3 = 480;
 
-	const double MAX_ITERATION_NUM = 100000;
-	const double EPSILON = 0.01;
+	size_type n_begin = 2500;
+
+	const double MAX_ITERATION_NUM = 1000000;
+	const double EPSILON = 0.001;
 
 	//
 	State init(size_type num)
 	{
 		if (num == 0)
-			return{ num, t_left, t_left, t_left, true, 0 };
+			return{num, t_left, t_left, t_left, true, 0 };
 		else if (num == N3)
 			return{ num, t_right, t_right, t_right, true, 0 };
 		else
@@ -125,41 +127,45 @@ namespace Example6{
 	//Оценка происходит путем подстановки полученных значений в систему
 	//и вычисления модуля отклонения
 
-	//recount_func generatorError(double a, double h)
-	//{
-	//	return[k](Iterator& arg)->State&
-	//	{
-	//		State& next = *++arg;
-	//		State& curr = *--arg;
-	//		State& prev = *--arg;
-	//		curr.error = std::abs(curr.value - (k * (next.value + prev.value) + curr.last_value) / (1 + 2 * k));
-	//		return curr;
-	//	};
-	//};
+	recount_func generatorError()
+	{
+		return[](Iterator& arg)->State&
+		{
+			State& next = *++arg;
+			State& curr = *--arg;
+			State& prev = *--arg;
+			curr.error = std::abs(curr.value - (1 / (4 * curr.num) * (next.value - prev.value) + (next.value + prev.value) / 2));
+			return curr;
+		};
+	};
 
-	//recount_func generatorBoundaryLeftError(double h, double lambda)
-	//{
-	//	return[h, lambda](Iterator& arg)->State&
-	//	{
-	//		State& next = *++arg;
-	//		State& curr = *--arg;
-	//		State& prev = *--arg;
-	//		curr.error = std::abs(curr.value - (prev.value + sigma * h * (std::pow(next.value, 4) - std::pow(curr.value, 4)) / lambda));
-	//		return curr;
-	//	};
-	//};
+	recount_func generatorBoundaryLeftError(double h, double lambda)
+	{
+		return[h, lambda](Iterator& arg)->State&
+		{
+			State& next = *++arg;
+			State& curr = *--arg;
+			State& prev = *--arg;
+			curr.error = std::abs(curr.value  
+				- ((2 * sigma * h / lambda * (std::pow(next.value, 4) - std::pow(curr.value, 4)) + prev.value) * (1 / (4 * curr.num) + 0.5)
+				+ prev.value * (0.5 - 1 / (4 * curr.num))));
+			return curr;
+		};
+	};
 
-	//recount_func generatorBoundaryRightError(double h, double lambda)
-	//{
-	//	return[h, lambda](Iterator& arg)->State&
-	//	{
-	//		State& next = *++arg;
-	//		State& curr = *--arg;
-	//		State& prev = *--arg;
-	//		curr.error = std::abs(curr.value - (next.value + sigma * h * (std::pow(prev.value, 4) - std::pow(curr.value, 4)) / lambda));
-	//		return curr;
-	//	};
-	//};
+	recount_func generatorBoundaryRightError(double h, double lambda)
+	{
+		return[h, lambda](Iterator& arg)->State&
+		{
+			State& next = *++arg;
+			State& curr = *--arg;
+			State& prev = *--arg;
+			curr.error = std::abs(curr.value 
+				- (next.value * (1 / (4 * curr.num) + 0.5) 
+				+ (2 * sigma * h / lambda * (std::pow(prev.value, 4) - std::pow(curr.value, 4)) + next.value) * (0.5 - 1 / (4 * curr.num))));
+			return curr;
+		};
+	};
 
 	void run()
 	{
@@ -178,14 +184,16 @@ namespace Example6{
 		recounter.push_back(new Layer(space.getIterator(N3 - 1), space.getIterator(N3 - 1), generatorBoundaryLeft(h, lambda3), empty));
 
 		//Слои для оценки ошибки
-		//std::vector<Layer*> error_estimator;
-		//error_estimator.push_back(new Layer(space.getIterator(1), space.getIterator(N1 - 1), generatorError(a1, h), empty));
-		//error_estimator.push_back(new Layer(space.getIterator(N1), space.getIterator(N1), generatorBoundaryLeftError(h, lambda1), empty));
-		//error_estimator.push_back(new Layer(space.getIterator(N1 + 1), space.getIterator(N1 + 1), generatorBoundaryRightError(h, lambda2), empty));
-		//error_estimator.push_back(new Layer(space.getIterator(N1 + 2), space.getIterator(N2 - 1), generatorError(a2, h), empty));
-		//error_estimator.push_back(new Layer(space.getIterator(N2), space.getIterator(N2), generatorBoundaryLeftError(h, lambda2), empty));
-		//error_estimator.push_back(new Layer(space.getIterator(N2 + 1), space.getIterator(N2 + 1), generatorBoundaryRightError(h, lambda3), empty));
-		//error_estimator.push_back(new Layer(space.getIterator(N2 + 2), space.getIterator(N3 - 1), generatorError(a3, h), empty));
+		std::vector<Layer*> error_estimator;
+		error_estimator.push_back(new Layer(space.getIterator(1), space.getIterator(1), generatorBoundaryRightError(h, lambda1), empty));
+		error_estimator.push_back(new Layer(space.getIterator(2), space.getIterator(N1 - 1), generatorError(), empty));
+		error_estimator.push_back(new Layer(space.getIterator(N1 + 1), space.getIterator(N1 + 1), generatorBoundaryLeftError(h, lambda2), empty));
+		error_estimator.push_back(new Layer(space.getIterator(N1 + 1), space.getIterator(N1 + 1), generatorBoundaryRightError(h, lambda2), empty));
+		error_estimator.push_back(new Layer(space.getIterator(N1 + 2), space.getIterator(N2 - 1), generatorError(), empty));
+		error_estimator.push_back(new Layer(space.getIterator(N2), space.getIterator(N2), generatorBoundaryLeftError(h, lambda2), empty));
+		error_estimator.push_back(new Layer(space.getIterator(N2 + 1), space.getIterator(N2 + 1), generatorBoundaryRightError(h, lambda3), empty));
+		error_estimator.push_back(new Layer(space.getIterator(N2 + 2), space.getIterator(N3 - 2), generatorError(), empty));
+		error_estimator.push_back(new Layer(space.getIterator(N3 - 1), space.getIterator(N3 - 1), generatorBoundaryLeftError(h, lambda3), empty));
 
 		bool& term_cond = space.getIterator(N3 - 1)->is_enough;
 		int i = 0;
@@ -198,15 +206,15 @@ namespace Example6{
 				while (!curr.forward_recount_step()){};
 			};
 			++i;
-			std::cout << " Number of iterations: " << i << "\n";
+			std::cout << " Number of iterations: " << i <<" Value: " << space.getIterator(1)->value << "\n";
 		};
 
-		//for (auto it = error_estimator.begin(); it != error_estimator.end(); ++it)
-		//{
-		//	Layer& curr = **it;
-		//	curr.resetForward();
-		//	while (!curr.forward_recount_step()){};
-		//};
+		for (auto it = error_estimator.begin(); it != error_estimator.end(); ++it)
+		{
+			Layer& curr = **it;
+			curr.resetForward();
+			while (!curr.forward_recount_step()){};
+		};
 
 		double distance = 0;
 		std::ofstream stream("example6.txt");
