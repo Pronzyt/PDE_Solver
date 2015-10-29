@@ -51,8 +51,8 @@ namespace Example6{
 
 	size_type n_begin = 2500;
 
-	const double MAX_ITERATION_NUM = 1000000;
-	const double EPSILON = 0.001;
+	const double MAX_ITERATION_NUM = 2000000;
+	const double EPSILON = 0.000001;
 
 	//
 	State init(size_type num)
