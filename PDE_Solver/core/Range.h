@@ -20,32 +20,29 @@ template<typename Ty>
 BaseHolder<Ty>::~BaseHolder(){};
 
 
-template<typename Ty, typename BidirectionalIterator>
-class Holder : public BaseHolder<Ty>{
-	
-static_assert(std::is_same<typename BidirectionalIterator::value_type, Ty>::value, "Wrong iterator value type");
-
-	public:
-		typedef Holder<Ty, BidirectionalIterator> my_Ty;
-		typedef typename my_Ty::value_type value_type;		
-		typedef BidirectionalIterator iterator_type;
-		Holder() = delete;
-		Holder(iterator_type begin, iterator_type end) 
-			: m_begin(begin),
-			m_end(end)
+template<typename BidirectionalIterator>
+class Holder : public BaseHolder<typename BidirectionalIterator::value_type >{
+public:
+	typedef Holder<BidirectionalIterator> my_Ty;
+	typedef typename BaseHolder::value_type value_type;
+	typedef BidirectionalIterator iterator_type;
+	Holder() = delete;
+	Holder(iterator_type begin, iterator_type end) 
+		: m_begin(begin),
+		m_end(end)
 		
-		{};
-		my_Ty* clone() const override {return new my_Ty(*this);};		
-		void increment() override {++m_current;};
-		void decrement() override {--m_current;};
-		void to_begin() override {m_current = m_begin;};
-		bool in_end() override {return m_current == m_end;};
-		value_type& getValue() override {return *m_current;};
-		~Holder() override {};
-	private:	
-		const iterator_type m_begin;
-		const iterator_type m_end;	
-		iterator_type m_current;		
+	{};
+	my_Ty* clone() const override {return new my_Ty(*this);};		
+	inline void increment() override {++m_current;};
+	inline void decrement() override {--m_current;};
+	inline void to_begin() override {m_current = m_begin;};
+	inline bool in_end() override {return m_current == m_end;};
+	value_type& getValue() override {return *m_current;};
+	~Holder() override {};
+private:	
+	const iterator_type m_begin;
+	const iterator_type m_end;	
+	iterator_type m_current;		
 };
 
 
@@ -100,7 +97,7 @@ public:
 	template<typename BidirectionalIterator>
 	FRange(BidirectionalIterator from, BidirectionalIterator to)
 	{
-		Range<Ty>::m_holder = new Holder<value_type, BidirectionalIterator>(from, ++to);
+		Range<Ty>::m_holder = new Holder<BidirectionalIterator>(from, ++to);
 	}
 };
 
@@ -116,7 +113,7 @@ public:
 		//typename BidirectionalIterator::value_type& temp0 = *to;
 		//typename RIter::value_type& temp1 = *RIter(++to);
 		//typename RIter::value_type& temp2 = *RIter(from);
-		Range<Ty>::m_holder = new Holder<value_type, RIter>(RIter(++to), RIter(from));
+		Range<Ty>::m_holder = new Holder<RIter>(RIter(++to), RIter(from));
 	}
 };
 

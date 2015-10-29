@@ -7,7 +7,8 @@
 #include <sstream>
 #include <math.h>
 #include <iostream>
-#include "Bundle.h"
+#include "../instruments/Bundle.h"
+#include "../instruments/Composite.h"
 
 void runExample1();
 void runExample2();
