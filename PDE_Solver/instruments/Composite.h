@@ -25,6 +25,5 @@ private:
 	std::vector<value_type> m_container;
 };
 
-
-
 #endif
+
