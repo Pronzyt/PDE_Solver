@@ -42,10 +42,10 @@ State& empty(iter& it)
 
 int main()
 {
-	Space1D<State> space1d{75, {
+	Space1D<State> space1d{
 		{5, init1},
 		{5, init2},
-		{5, init3}}};
+		{5, init3}};
 
 	Composite<Space::iterator> composite;
 	composite.placeLayer(space1d.getIterator(0), space1d.getIterator(5), 0, empty, empty);

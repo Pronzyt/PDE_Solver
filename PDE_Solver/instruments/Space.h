@@ -43,8 +43,14 @@ public:
 
 	//Каждая инициализирующая функция вызывается range раз,
 	//при этом в нее передаются параметр из диапазона (0, range)
-	Space1D(size_type size, Initilizers initilizers)
+	Space1D(Initilizers initilizers)
 	{
+		size_type size = 0;
+		for (auto initilizer = initilizers.begin(); initilizer != initilizers.end(); ++initilizer)
+		{
+			size += initilizer->range;
+		};
+
 		m_container.resize(size);
 		auto curr = m_container.begin();
 		for (auto initilizer = initilizers.begin(); initilizer != initilizers.end(); ++initilizer)
