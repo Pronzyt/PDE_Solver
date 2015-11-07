@@ -38,9 +38,6 @@ BaseLayer<Ty>::~BaseLayer(){};
 template<typename State_Ty>
 class Layer: public BaseLayer<State_Ty>{
 public:
-	typedef Layer<State_Ty> my_Ty;
-	typedef typename my_Ty::value_type value_type;
-	typedef typename my_Ty::recount_func recount_func;
 
 	Layer() = delete;
 
@@ -53,18 +50,17 @@ public:
 
 //	Layer(const Layer& rhs) : BaseLayer<State_Ty>(rhs), m_range(rhs.m_range){};
 //	void setRange(range_type range);	
+
 	virtual bool forward_recount_step() override
 	{
-		auto temp = m_f_range;
-		this->m_f_recount_func(temp);
+		this->m_f_recount_func(m_f_range);
 		++m_f_range;
 		return m_f_range.in_end();
 	};
 
 	virtual bool backward_recount_step() override
 	{
-		auto temp = m_r_range;
-		this->m_b_recount_func(temp);
+		this->m_b_recount_func(m_r_range);
 		++m_r_range;
 		return m_r_range.in_end();
 	};

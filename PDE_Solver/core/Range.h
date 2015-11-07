@@ -21,7 +21,7 @@ BaseHolder<Ty>::~BaseHolder(){};
 
 
 template<typename BidirectionalIterator>
-class Holder : public BaseHolder<typename BidirectionalIterator::value_type >{
+class Holder : public BaseHolder<typename BidirectionalIterator::value_type>{
 public:
 	typedef Holder<BidirectionalIterator> my_Ty;
 	typedef typename BaseHolder::value_type value_type;
@@ -38,6 +38,15 @@ public:
 	inline void to_begin() override {m_current = m_begin;};
 	inline bool in_end() override {return m_current == m_end;};
 	value_type& getValue() override {return *m_current;};
+
+	/*Experimental*/
+	//template<typename BidirectionalIterator>
+	//BidirectionalIterator& getOriginalIterator()
+	//{
+	//	static_assert(std::is_same<BidirectionalIterator, iterator_type>, "Wrong iterator typecast");
+	//	return m_current;
+	//};
+
 	~Holder() override {};
 private:	
 	const iterator_type m_begin;
@@ -55,7 +64,11 @@ public:
 	virtual Derived& operator--() = 0;
 	virtual Derived operator--(int) = 0;
 	virtual value_type& operator*() = 0;
+	virtual ~IRange() = 0;
 };
+
+template<typename Derived, typename my_Val>
+IRange<Derived, my_Val>::~IRange(){};
 
 
 template<typename Ty>
@@ -70,7 +83,7 @@ public:
 		delete m_holder;
 		m_holder = rhs.m_holder->clone();
 		return *this;
-	}
+	};
 	
 	my_Ty& operator++() override {m_holder->increment(); return *this;}
 	my_Ty operator++(int) override {my_Ty temp(*this); m_holder->increment(); return temp;}
@@ -98,7 +111,7 @@ public:
 	FRange(BidirectionalIterator from, BidirectionalIterator to)
 	{
 		Range<Ty>::m_holder = new Holder<BidirectionalIterator>(from, ++to);
-	}
+	};
 };
 
 
@@ -110,11 +123,8 @@ public:
 	RRange(BidirectionalIterator from, BidirectionalIterator to)
 	{
 		typedef std::reverse_iterator<BidirectionalIterator> RIter;
-		//typename BidirectionalIterator::value_type& temp0 = *to;
-		//typename RIter::value_type& temp1 = *RIter(++to);
-		//typename RIter::value_type& temp2 = *RIter(from);
 		Range<Ty>::m_holder = new Holder<RIter>(RIter(++to), RIter(from));
-	}
+	};
 };
 
 #endif	/* RANGE_H */

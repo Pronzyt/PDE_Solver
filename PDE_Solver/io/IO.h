@@ -4,11 +4,13 @@
 #include <string>
 #include "csvfile.h"
 
-template<typename Ty>
-void saveToCSV(std::string filename, Ty obj)
-{
-	
-};
+
+
+//template<typename Ty>
+//void saveToCSV(std::string filename, Ty obj)
+//{
+//	
+//};
 
 
 
