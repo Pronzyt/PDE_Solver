@@ -18,7 +18,14 @@ public:
 		m_container.emplace(m_container.end(), from, to, forward_func, backward_func);
 	};
 
-
+	void recountForward()
+	{
+		for (auto it = m_container.begin(); it != m_container.end(); ++it)
+		{
+			it->resetForward();
+			while (!it->forward_recount_step()){};
+		};
+	};
 
 private:
 	std::vector<value_type> m_container;
