@@ -18,6 +18,8 @@ public:
 		m_container.emplace(m_container.end(), from, to, forward_func, backward_func);
 	};
 
+
+
 private:
 	std::vector<value_type> m_container;
 };

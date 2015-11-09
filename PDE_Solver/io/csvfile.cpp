@@ -12,9 +12,6 @@ void CSVRow::readNextRow(std::istream& stream)
 	std::string line;
 	std::getline(stream, line);	
 
-	while(line[0] == '#')
-		std::getline(stream, line);		
-
 	std::stringstream lineStream(line);
     std::string cell;
 
