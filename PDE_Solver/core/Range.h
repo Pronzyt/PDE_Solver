@@ -12,7 +12,8 @@ public:
 	virtual void decrement() = 0;
 	virtual void to_begin() = 0;
 	virtual bool in_end() = 0;
-	virtual value_type& getValue() = 0;
+	virtual value_type& getReference() = 0;
+	virtual value_type* getPointer() = 0;
 	virtual ~BaseHolder() = 0;
 };
 
@@ -37,7 +38,8 @@ public:
 	inline void decrement() override {--m_current;};
 	inline void to_begin() override {m_current = m_begin;};
 	inline bool in_end() override {return m_current == m_end;};
-	value_type& getValue() override {return *m_current;};
+	value_type& getReference() override {return *m_current;};
+	value_type* getPointer() override {return &(*m_current);};
 
 	/*Experimental*/
 	//template<typename BidirectionalIterator>
@@ -64,6 +66,7 @@ public:
 	virtual Derived& operator--() = 0;
 	virtual Derived operator--(int) = 0;
 	virtual value_type& operator*() = 0;
+	virtual value_type* operator->() = 0;
 	virtual ~IRange() = 0;
 };
 
@@ -89,11 +92,11 @@ public:
 	my_Ty operator++(int) override {my_Ty temp(*this); m_holder->increment(); return temp;}
 	my_Ty& operator--() override {m_holder->decrement(); return *this;}
 	my_Ty operator--(int) override {my_Ty temp(*this); m_holder->decrement(); return temp;}
-	value_type& operator*() override {return m_holder->getValue();};
+	value_type& operator*() override {return m_holder->getReference();};
+	value_type* operator->() override {return m_holder->getPointer();}
 	
 	my_Ty& to_begin(){m_holder->to_begin(); return *this;}
 	bool in_end(){return m_holder->in_end();};
-	value_type getValue() const {return m_holder->getValue();}
 	
 	~Range(){delete m_holder;}	
 

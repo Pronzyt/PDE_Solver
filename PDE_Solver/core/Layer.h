@@ -53,14 +53,16 @@ public:
 
 	virtual bool forward_recount_step() override
 	{
-		this->m_f_recount_func(m_f_range);
+		auto temp = m_f_range;
+		this->m_f_recount_func(temp); //Так надо!!!
 		++m_f_range;
 		return m_f_range.in_end();
 	};
 
 	virtual bool backward_recount_step() override
 	{
-		this->m_b_recount_func(m_r_range);
+		auto temp = m_r_range;
+		this->m_b_recount_func(temp);
 		++m_r_range;
 		return m_r_range.in_end();
 	};
