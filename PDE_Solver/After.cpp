@@ -1,4 +1,4 @@
-#include <iostream>
+п»ї#include <iostream>
 #include "instruments\Composite.h"
 #include "instruments\Space.h"
 #include "io\IO.h"
@@ -51,8 +51,8 @@ const double sigma = 5.67e-8;
 
 const double h = 0.001 / scale;
 
-/*Теплофизические свойства слоев (сталь, внутренняя и внешняя футеровки, 
-вольфрамовый стакан и расплава Al2O3 соответственно */
+/*РўРµРїР»РѕС„РёР·РёС‡РµСЃРєРёРµ СЃРІРѕР№СЃС‚РІР° СЃР»РѕРµРІ (СЃС‚Р°Р»СЊ, РІРЅСѓС‚СЂРµРЅРЅСЏСЏ Рё РІРЅРµС€РЅСЏСЏ С„СѓС‚РµСЂРѕРІРєРё, 
+РІРѕР»СЊС„СЂР°РјРѕРІС‹Р№ СЃС‚Р°РєР°РЅ Рё СЂР°СЃРїР»Р°РІР° Al2O3 СЃРѕРѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕ */
 
 const double lambda1 = 47; 
 const double lambda2 = 2;
@@ -86,10 +86,10 @@ double viewFactor(State from, State to)
 /*----------------------------------------------------------------------------*/
 
 /*---------------------Recount functions--------------------------------------*/
-/*Здесь выбран обратный порядок пересчета, так как тело охлаждается*/
+/*Р—РґРµСЃСЊ РІС‹Р±СЂР°РЅ РѕР±СЂР°С‚РЅС‹Р№ РїРѕСЂСЏРґРѕРє РїРµСЂРµСЃС‡РµС‚Р°, С‚Р°Рє РєР°Рє С‚РµР»Рѕ РѕС…Р»Р°Р¶РґР°РµС‚СЃСЏ*/
 
 
-/*По условию симметрии*/
+/*РџРѕ СѓСЃР»РѕРІРёСЋ СЃРёРјРјРµС‚СЂРёРё*/
 State& setCentralValueLeft(state_iterator& arg)
 {
 	State& curr = *arg;
@@ -104,7 +104,7 @@ State& setCentralValueRight(state_iterator& arg)
 	return *(++arg);
 };
 
-/*Граничное условие 4го рода*/
+/*Р“СЂР°РЅРёС‡РЅРѕРµ СѓСЃР»РѕРІРёРµ 4РіРѕ СЂРѕРґР°*/
 recount_func generatorIdealContact(double a1, double a2, double tau, double lambda1, double lambda2, double h1, double h2)
 {
 	double k1 = a1 * tau / (h1 * h1);
@@ -139,7 +139,7 @@ recount_func generatorIdealContact(double a1, double a2, double tau, double lamb
 	};
 };
 
-//Генератор итераций пересчета температуры в слое
+//Р“РµРЅРµСЂР°С‚РѕСЂ РёС‚РµСЂР°С†РёР№ РїРµСЂРµСЃС‡РµС‚Р° С‚РµРјРїРµСЂР°С‚СѓСЂС‹ РІ СЃР»РѕРµ
 recount_func generator(double a, double tau, double h)
 {
 	double k = a * tau / (h * h);
@@ -159,7 +159,7 @@ recount_func generator(double a, double tau, double h)
 	};
 };
 
-//Генератор итераций пересчета температуры на левой границе
+//Р“РµРЅРµСЂР°С‚РѕСЂ РёС‚РµСЂР°С†РёР№ РїРµСЂРµСЃС‡РµС‚Р° С‚РµРјРїРµСЂР°С‚СѓСЂС‹ РЅР° Р»РµРІРѕР№ РіСЂР°РЅРёС†Рµ
 recount_func generatorBoundaryLeft(double h, double lambda, double a, double tau, double factor)
 {
 	double k = a * tau / (h * h); 
@@ -181,7 +181,7 @@ recount_func generatorBoundaryLeft(double h, double lambda, double a, double tau
 	};
 };
 
-//Генератор итераций пересчета температуры на правой границе
+//Р“РµРЅРµСЂР°С‚РѕСЂ РёС‚РµСЂР°С†РёР№ РїРµСЂРµСЃС‡РµС‚Р° С‚РµРјРїРµСЂР°С‚СѓСЂС‹ РЅР° РїСЂР°РІРѕР№ РіСЂР°РЅРёС†Рµ
 recount_func generatorBoundaryRight(double h, double lambda, double a, double tau, double factor)
 {
 	double k = a * tau / (h * h);
@@ -223,7 +223,7 @@ State& reset(state_iterator& it)
 Space& start(Space& space, std::string filename)
 {
 	std::ifstream stream(filename);
-	/*Если файл существует, грузим из него*/
+	/*Р•СЃР»Рё С„Р°Р№Р» СЃСѓС‰РµСЃС‚РІСѓРµС‚, РіСЂСѓР·РёРј РёР· РЅРµРіРѕ*/
 	if (stream.is_open())
 	{
 		CSVIterator csviterator(stream);
@@ -268,18 +268,18 @@ int main()
 	int layer_begin = 0;
 	int layer_end = L5;
 
-	/*Расплав Al2O3*/
+	/*Р Р°СЃРїР»Р°РІ Al2O3*/
 	composite.placeLayer(space.getIterator(layer_begin), space.getIterator(layer_begin), empty, setCentralValueLeft);
 	composite.placeLayer(space.getIterator(layer_begin + 1), space.getIterator(layer_end - 1), empty, generator(a5, tau, h));
 
-	/*Граничное условие 4го рода*/
+	/*Р“СЂР°РЅРёС‡РЅРѕРµ СѓСЃР»РѕРІРёРµ 4РіРѕ СЂРѕРґР°*/
 	composite.placeLayer(space.getIterator(layer_end), space.getIterator(layer_end), empty, generatorIdealContact(a5, a4, tau, lambda5, lambda4, h, h));
 
 	layer_begin += L5;
 	layer_end += L4;
 	double view_factor_left = viewFactor(*space.getIterator(layer_end + 1), *space.getIterator(layer_end));
 
-	/*Вольфрамовый тигель*/
+	/*Р’РѕР»СЊС„СЂР°РјРѕРІС‹Р№ С‚РёРіРµР»СЊ*/
 	composite.placeLayer(space.getIterator(layer_begin + 1), space.getIterator(layer_end - 1), empty, generator(a4, tau, h));
 	composite.placeLayer(space.getIterator(layer_end), space.getIterator(layer_end), empty, generatorBoundaryLeft(h, lambda4, a4, tau, view_factor_left));
 
@@ -289,7 +289,7 @@ int main()
 	double view_factor_right = viewFactor(*space.getIterator(layer_begin - 1), *space.getIterator(layer_begin));
 	view_factor_left = viewFactor(*space.getIterator(layer_end + 1), *space.getIterator(layer_end));
 	
-	/*Внутренняя футеровка*/
+	/*Р’РЅСѓС‚СЂРµРЅРЅСЏСЏ С„СѓС‚РµСЂРѕРІРєР°*/
 	composite.placeLayer(space.getIterator(layer_begin), space.getIterator(layer_begin), empty, generatorBoundaryRight(h, lambda3, a3, tau, view_factor_right));
 	composite.placeLayer(space.getIterator(layer_begin + 1), space.getIterator(layer_end - 1), empty, generator(a3, tau, h));
 	composite.placeLayer(space.getIterator(layer_end), space.getIterator(layer_end), empty, generatorBoundaryLeft(h, lambda3, a3, tau, view_factor_left));
@@ -300,7 +300,7 @@ int main()
 	view_factor_right = viewFactor(*space.getIterator(layer_begin - 1), *space.getIterator(layer_begin));
 	view_factor_left = viewFactor(*space.getIterator(layer_end + 1), *space.getIterator(layer_end));
 
-	/*Внешняя футеровка*/
+	/*Р’РЅРµС€РЅСЏСЏ С„СѓС‚РµСЂРѕРІРєР°*/
 	composite.placeLayer(space.getIterator(layer_begin), space.getIterator(layer_begin), empty, generatorBoundaryRight(h, lambda2, a2, tau, view_factor_right));
 	composite.placeLayer(space.getIterator(layer_begin + 1), space.getIterator(layer_end - 1), empty, generator(a2, tau, h));
 	composite.placeLayer(space.getIterator(layer_end), space.getIterator(layer_end), empty, generatorBoundaryLeft(h, lambda2, a2, tau, view_factor_left));
@@ -311,20 +311,20 @@ int main()
 	view_factor_right = viewFactor(*space.getIterator(layer_begin - 1), *space.getIterator(layer_begin));
 	view_factor_left = viewFactor(*space.getIterator(layer_end + 1), *space.getIterator(layer_end));
 
-	///*Стальной экран*/
+	///*РЎС‚Р°Р»СЊРЅРѕР№ СЌРєСЂР°РЅ*/
 	composite.placeLayer(space.getIterator(layer_begin), space.getIterator(layer_begin), empty, generatorBoundaryRight(h, lambda1, a1, tau, view_factor_right));
 	composite.placeLayer(space.getIterator(layer_begin + 1), space.getIterator(layer_end - 1), empty, generator(a1, tau, h));
 	composite.placeLayer(space.getIterator(layer_end), space.getIterator(layer_end), empty, generatorBoundaryLeft(h, lambda1, a1, tau, view_factor_left));
 
-	/*Создаем условие остановки итераций*/
+	/*РЎРѕР·РґР°РµРј СѓСЃР»РѕРІРёРµ РѕСЃС‚Р°РЅРѕРІРєРё РёС‚РµСЂР°С†РёР№*/
 	space.getIterator(layer_end + 1)->is_complete = true;
 	bool& done = space.getIterator(1)->is_complete;
 
-	/*При переходе на следующий шаг по времени сохраняем значения*/
+	/*РџСЂРё РїРµСЂРµС…РѕРґРµ РЅР° СЃР»РµРґСѓСЋС‰РёР№ С€Р°Рі РїРѕ РІСЂРµРјРµРЅРё СЃРѕС…СЂР°РЅСЏРµРј Р·РЅР°С‡РµРЅРёСЏ*/
 	Composite resetter;
 	resetter.placeLayer(space.getIterator(1), space.getIterator(layer_end), reset, empty);
 
-	/*Запускаем моделирование*/
+	/*Р—Р°РїСѓСЃРєР°РµРј РјРѕРґРµР»РёСЂРѕРІР°РЅРёРµ*/
 	double current_time = 0;
 	while (current_time < time_end)
 	{

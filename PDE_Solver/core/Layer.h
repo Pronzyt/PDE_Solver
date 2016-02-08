@@ -4,8 +4,15 @@
 #include <functional>
 #include "Range.h"
 
+/*Базовый класс, который производит пересчет состояний (State_Ty),
+используя функцию пересчета recount_func. Доступ к диапазону точек осуществляется
+при помощи интерфейса IRange.*/
 
-template<typename State_Ty> 
+
+namespace core{
+
+
+template<typename State_Ty>
 class BaseLayer{
 public:
 	typedef BaseLayer<State_Ty> my_Ty;
@@ -13,74 +20,85 @@ public:
 	typedef IRange<Range<value_type>, value_type> iterator;
 	typedef std::function<value_type&(iterator&)> recount_func;
 
-	BaseLayer(const BaseLayer& rhs) 
-		: m_f_recount_func(rhs.m_f_recount_func), m_b_recount_func(rhs.m_b_recount_func)
+	BaseLayer(const BaseLayer& rhs)
+		: m_recount_func(rhs.m_recount_func)
 	{};
-//	virtual void setForwardFunc(recount_func func);
-//	virtual void setBackwardFunc(recount_func func);
-	virtual bool forward_recount_step() = 0;
-	virtual bool backward_recount_step() = 0;
-	virtual void resetForward() = 0;
-	virtual void resetBackward() = 0;
+
+	/*Осуществляет шаг пересчета 
+	return true, если конец диапазона был достигнут	*/
+	virtual bool recount_step() = 0; 
+	virtual void recount(){ while (!recount_step()){}; }
+
+	/*	Переход на начало диапазона	*/
+	virtual void reset() = 0;
 	virtual ~BaseLayer() = 0;
 protected:
-	BaseLayer(recount_func f_func, recount_func b_func)
-		:m_f_recount_func(f_func), m_b_recount_func(b_func)
+	BaseLayer(recount_func func)
+		:m_recount_func(func)
 	{};
-	recount_func m_f_recount_func;
-	recount_func m_b_recount_func;
+	recount_func m_recount_func;
 };
 
 template<typename Ty>
 BaseLayer<Ty>::~BaseLayer(){};
 
 
-template<typename State_Ty>
-class Layer: public BaseLayer<State_Ty>{
+
+template<template<typename>class Range_Ty, typename State_Ty>
+class Layer : public BaseLayer<State_Ty>{
 public:
 
-	Layer() = delete;
-
 	template<typename BidirectionalIterator>
-	Layer(BidirectionalIterator from, BidirectionalIterator to, recount_func f_func, recount_func b_func)
-		:BaseLayer<State_Ty>(f_func, b_func), m_f_range(from, to), m_r_range(from, to)
+	Layer(BidirectionalIterator from, BidirectionalIterator to, int offset, recount_func func)
+		:BaseLayer<State_Ty>(func), m_range(from, to, offset)
 	{};
 
-	virtual ~Layer() override{};
+	template<typename BidirectionalIterator>
+	Layer(std::pair<BidirectionalIterator, BidirectionalIterator> range, int offset, recount_func func)
+		:Layer(range.first, range.second, offset, func)
+	{};
 
-//	Layer(const Layer& rhs) : BaseLayer<State_Ty>(rhs), m_range(rhs.m_range){};
-//	void setRange(range_type range);	
+	~Layer() override{};
 
-	virtual bool forward_recount_step() override
+	bool recount_step() override
 	{
-		auto temp = m_f_range;
-		this->m_f_recount_func(temp); //Так надо!!!
-		++m_f_range;
-		return m_f_range.in_end();
+		m_range.hold();
+		this->m_recount_func(m_range);
+		m_range.reset();
+		++m_range;
+		return m_range.in_end();
 	};
 
-	virtual bool backward_recount_step() override
+	void reset() override
 	{
-		auto temp = m_r_range;
-		this->m_b_recount_func(temp);
-		++m_r_range;
-		return m_r_range.in_end();
-	};
-
-	virtual void resetForward() override
-	{
-		m_f_range.to_begin();
-	};
-
-	virtual void resetBackward() override
-	{
-		m_r_range.to_begin();
+		m_range.to_begin();
 	};
 
 private:
-	FRange<value_type> m_f_range;
-	RRange<value_type> m_r_range;
+	Layer() = delete;
+	Range_Ty<State_Ty> m_range;
 };
 
+
+template<typename State_Ty>
+class FLayer : public Layer<FRange, State_Ty>{
+public:
+	template <typename... Args>
+	explicit FLayer(Args&&... args)
+		: Layer<FRange, State_Ty>(std::forward<Args>(args)...)
+	{ };
+};
+
+
+template<typename State_Ty>
+class RLayer : public Layer<RRange, State_Ty>{
+public:
+	template <typename... Args>
+	explicit RLayer(Args&&... args)
+		: Layer<RRange, State_Ty>(std::forward<Args>(args)...)
+	{ };
+};
+
+};
 
 #endif	/* LAYER_H */

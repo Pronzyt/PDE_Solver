@@ -63,6 +63,26 @@ public:
 		};
 	};
 
+	//Space1D(Initilizers& initilizers)
+	//{
+	//	size_type size = 0;
+	//	for (auto initilizer = initilizers.begin(); initilizer != initilizers.end(); ++initilizer)
+	//	{
+	//		size += initilizer->range;
+	//	};
+
+	//	m_container.resize(size);
+	//	auto curr = m_container.begin();
+	//	for (auto initilizer = initilizers.begin(); initilizer != initilizers.end(); ++initilizer)
+	//	{
+	//		for (size_type i = 0; i < initilizer->range; ++i)
+	//		{
+	//			(*curr) = initilizer->init_func(i);
+	//			++curr;
+	//		};
+	//	};
+	//};
+
 	Space1D(const Space1D&){};
 
 	~Space1D(){};
@@ -97,12 +117,12 @@ public:
 		return m_container.size();
 	};
 
-	iterator getIterator(size_type pos)
-	{
-		iterator temp = m_container.begin();
-		std::advance(temp, pos);
-		return temp;
-	};
+	//iterator getIterator(size_type pos)
+	//{
+	//	iterator temp = m_container.begin();
+	//	std::advance(temp, pos);
+	//	return temp;
+	//};
 
 	//Range<value_type> getRange(size_type from, size_type to);
 private:
