@@ -1,10 +1,6 @@
 #ifndef STACK_H
 #define STACK_H
 
-
-#include "Range.h"
-#include "Layer.h"
-#include <functional>
 #include <vector>
 
 namespace core
@@ -17,8 +13,9 @@ class Stack{
 public:
 	typedef Val_Ty value_type;
 
-	typedef typename  Val_Ty::state_iterator state_iterator;
+	typedef typename Val_Ty::state_iterator state_iterator;
 	typedef typename state_iterator::value_type state_type;
+	typedef typename Val_Ty::recount_func recount_func;
 
 
 	Stack(){};
@@ -30,21 +27,48 @@ public:
 		state_iterator end_local = begin;
 		for (auto it = m_container.begin(); it != m_container.end(); ++it)
 		{
-			std::advance(end_local, it->second + 1);
-			it->first.set_range(begin_local, end_local);
-			std::advance(begin_local, it->second);
+			std::advance(end_local, it->first);
+			it->second.set_range(begin_local, end_local);
+			std::advance(begin_local, it->first);
 		};		
+	};
+
+
+	void set_reverse_range(state_iterator begin, state_iterator end)
+	{
+		state_iterator begin_local = begin;
+		state_iterator end_local = begin;
+		for (auto it = m_container.rbegin(); it != m_container.rend(); ++it)
+		{
+			std::advance(end_local, it->first);
+			it->second.set_range(begin_local, end_local);
+			std::advance(begin_local, it->first);
+		};
 	};
 
 
 	bool recount_until(const bool& condition)
 	{
 		bool result = true;
-		while (!condition)
+		//while (!condition)
 		{
 			for (auto it = m_container.begin(); it != m_container.end(); ++it)
 			{
-				result = it->first.recount() && result;
+				result = it->second.recount() && result;
+			};
+		};
+		return result;
+	};
+
+
+	bool reverse_recount_until(const bool& condition)
+	{
+		bool result = true;
+		//while (!condition)
+		{
+			for (auto it = m_container.rbegin(); it != m_container.rend(); ++it)
+			{
+				result = it->second.recount() && result;
 			};
 		};
 		return result;
@@ -76,6 +100,16 @@ public:
 	};
 
 
+	size_t total_size()
+	{
+		size_t size = 0;
+		for (auto it = m_container.begin(); it != m_container.end(); ++it)
+		{
+			size += it->first;
+		};
+		return size;
+	};
+
 private:
 	typedef std::pair<size_t, value_type> pair_type;
 	typedef std::vector<pair_type> container_type;
@@ -84,8 +118,7 @@ private:
 	Stack(Stack&&) = delete;
 	Stack& operator=(const Stack&) = delete;
 
-	state_iterator m_begin;
-	state_iterator m_end;
+
 	container_type m_container;
 	
 };

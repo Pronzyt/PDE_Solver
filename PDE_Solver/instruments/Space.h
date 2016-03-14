@@ -14,6 +14,8 @@ public:
 	typedef typename container_type::value_type value_type;
 	typedef typename container_type::iterator iterator;
 	typedef typename container_type::const_iterator const_iterator;
+	typedef typename container_type::reverse_iterator reverse_iterator;
+	typedef typename container_type::const_reverse_iterator const_reverse_iterator;
 	typedef value_type (*init_func_type)(size_type);
 
 	struct Initilizer
@@ -105,6 +107,16 @@ public:
 	const_iterator cend() const
 	{
 		return this->m_container.cend();
+	};
+
+	reverse_iterator rbegin()
+	{
+		return this->m_container.rbegin();
+	};
+
+	reverse_iterator rend()
+	{
+		return this->m_container.rbegin();
 	};
 
 	value_type operator[](int i)

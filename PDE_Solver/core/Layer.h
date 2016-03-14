@@ -2,7 +2,7 @@
 #define LAYER_H
 
 #include <functional>
-#include "Range.h"
+
 
 
 namespace core{
@@ -34,12 +34,13 @@ class Layer /*: public BaseLayer<typename Iterator_Ty::value_type>*/{
 public:
 
 	typedef Iterator_Ty state_iterator;
+	typedef std::function<bool(state_iterator)> recount_func;
 
-	typedef std::function<bool(state_iterator&)> recount_func;
 
 	Layer(int offset, recount_func func)
 		: m_offset(offset), m_recount_func(func)
 	{};
+
 
 	Layer(Layer&& rhs) :
 		m_begin(std::move(rhs.m_begin)),
@@ -53,6 +54,8 @@ public:
 	{
 		std::swap(m_begin, begin);
 		std::swap(m_end, end);
+		std::advance(m_begin, m_offset);
+		std::advance(m_end, m_offset);
 	};
 
 
@@ -61,7 +64,8 @@ public:
 		bool result = true;
 		for (state_iterator it = m_begin; it != m_end; ++it)
 		{
-			result = result && m_recount_func(++it);
+			bool test1 = m_recount_func(it);
+			result = result && test1;
 		};
 		return result;
 	};
