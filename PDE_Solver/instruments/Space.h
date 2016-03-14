@@ -14,6 +14,8 @@ public:
 	typedef typename container_type::value_type value_type;
 	typedef typename container_type::iterator iterator;
 	typedef typename container_type::const_iterator const_iterator;
+	typedef typename container_type::reverse_iterator reverse_iterator;
+	typedef typename container_type::const_reverse_iterator const_reverse_iterator;
 	typedef value_type (*init_func_type)(size_type);
 
 	struct Initilizer
@@ -63,6 +65,26 @@ public:
 		};
 	};
 
+	//Space1D(Initilizers& initilizers)
+	//{
+	//	size_type size = 0;
+	//	for (auto initilizer = initilizers.begin(); initilizer != initilizers.end(); ++initilizer)
+	//	{
+	//		size += initilizer->range;
+	//	};
+
+	//	m_container.resize(size);
+	//	auto curr = m_container.begin();
+	//	for (auto initilizer = initilizers.begin(); initilizer != initilizers.end(); ++initilizer)
+	//	{
+	//		for (size_type i = 0; i < initilizer->range; ++i)
+	//		{
+	//			(*curr) = initilizer->init_func(i);
+	//			++curr;
+	//		};
+	//	};
+	//};
+
 	Space1D(const Space1D&){};
 
 	~Space1D(){};
@@ -87,6 +109,16 @@ public:
 		return this->m_container.cend();
 	};
 
+	reverse_iterator rbegin()
+	{
+		return this->m_container.rbegin();
+	};
+
+	reverse_iterator rend()
+	{
+		return this->m_container.rbegin();
+	};
+
 	value_type operator[](int i)
 	{
 		return this->m_container[i];
@@ -97,12 +129,12 @@ public:
 		return m_container.size();
 	};
 
-	iterator getIterator(size_type pos)
-	{
-		iterator temp = m_container.begin();
-		std::advance(temp, pos);
-		return temp;
-	};
+	//iterator getIterator(size_type pos)
+	//{
+	//	iterator temp = m_container.begin();
+	//	std::advance(temp, pos);
+	//	return temp;
+	//};
 
 	//Range<value_type> getRange(size_type from, size_type to);
 private:
